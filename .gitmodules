@@ -1,0 +1,3 @@
+[submodule "csDelaunay"]
+	path = csDelaunay
+	url = https://github.com/jfg8/csDelaunay.git

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using System.IO;
 
 public static class Utilities{
 
@@ -19,5 +20,74 @@ public static class Utilities{
         }
 
         Debug.Log(result);
+    }
+
+
+    public static void ExportArrayToCSV(float[] dataArray, String headers, string filePath)
+    {
+        // Create a string builder to store CSV data
+        System.Text.StringBuilder csvContent = new System.Text.StringBuilder();
+
+        // Append header if needed
+        csvContent.AppendLine(headers);
+
+        // Append each data item
+        foreach (object data in dataArray)
+        {
+            csvContent.AppendLine(data.ToString());
+        }
+
+        // Write CSV data to file
+        File.WriteAllText(filePath, csvContent.ToString());
+
+        Debug.Log("CSV file exported to: " + filePath);
+    }
+
+    public static void ExportArrayToCSV(int[] dataArray, String headers, string filePath)
+    {
+        // Create a string builder to store CSV data
+        System.Text.StringBuilder csvContent = new System.Text.StringBuilder();
+
+        // Append header if needed
+        if (headers != "") csvContent.AppendLine(headers);
+
+        // Append each data item
+        foreach (object data in dataArray)
+        {
+            csvContent.AppendLine(data.ToString());
+        }
+
+        // Write CSV data to file
+        File.WriteAllText(filePath, csvContent.ToString());
+
+        Debug.Log("CSV file exported to: " + filePath);
+    }
+
+    public static void AppendLineToFile(String filePath, String lineToAppend)
+    {
+        try
+        {
+            // Check if the file exists
+            if (File.Exists(filePath))
+            {
+                // Open the file and append the line
+                using (StreamWriter sw = File.AppendText(filePath))
+                {
+                    sw.WriteLine(lineToAppend);
+                }
+            }
+            else
+            {
+                Debug.LogError("File does not exist");
+            }
+        }
+        catch (IOException e)
+        {
+            Debug.LogError("An IO exception occurred: " + e.Message);
+        }
+        catch (System.Exception e)
+        {
+            Debug.LogError("An exception occurred: " + e.Message);
+        }
     }
 }

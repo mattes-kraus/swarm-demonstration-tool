@@ -2,17 +2,25 @@ using UnityEngine;
 
 public class PhysicalObject : MonoBehaviour
 {
-    [SerializeField] private ObjectType type;
+    [SerializeField] public ObjectType type;
      // Das Bild für den Mauszeiger, wenn er über dem UI-Element schwebt
     [SerializeField] private Texture2D cursorTexture;
     // if element is currently disabled for clicks, we want to propagate click to the ground
     private ModificationAdder underlyingElement;
 
     void Start(){
+        // if we press a groundsticker maybe we wanted to spawn something
+        // therefore in some cases we redirect the click to the ground
         underlyingElement = GameObject.Find("Ground").GetComponent<ModificationAdder>();
+
+        // for computing voronoi, we need the walls
+        if(type == ObjectType.Wall){
+            GameObject.Find("VoronoiVis").GetComponent<VoronoiDiagram>().walls.Add(gameObject);
+        }
     }
 
     void Update(){
+        // make object not clickable anymore when config of the arena is done
         if(GameManagement.gameState == GameState.Running && type != ObjectType.Beacon){
             gameObject.layer = 2;
         } 

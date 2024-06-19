@@ -1,20 +1,21 @@
 using System;
 using System.Collections;
+using Unity.Burst.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Turtlebot : MonoBehaviour
 {
-    private float speed = 0.31f; 
+    public float speed = 0.31f; 
     public BotBehavior botState = BotBehavior.Random;
     public Vector3 targetLoc;
+    public int indexInAllBots;
     [SerializeField] private GameObject selectedMarker;
+    [SerializeField] private GameObject stateIndicator;
+    private const float MAX_SPEED = 0.31f; 
 
     void Start(){
-        try{
-            GameObject.Find("MetricManager").GetComponent<MetricManagement>().allBots.Add(this);
-        } catch(SystemException e){
-            Debug.Log(e.Message);
-        }
+        indexInAllBots = GameManagement.AddBotToGlobalList(this);
     }
 
     void Update()
@@ -22,16 +23,24 @@ public class Turtlebot : MonoBehaviour
         if(GameManagement.gameState != GameState.Running){
             return;
         }
+
+        // indicate robot state via light color
+        stateIndicator.GetComponent<Renderer>().material.SetColor("_EmissionColor", GameManagement.GetColorByBehavior(botState));
+        stateIndicator.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+        stateIndicator.GetComponent<Renderer>().UpdateGIMaterials();
         
+        // execute behavior depending on its state
         switch (botState)
         {
             // move constantly around
             case BotBehavior.Random: 
+                speed = MAX_SPEED;
                 transform.Translate(Vector3.forward * speed * Time.deltaTime);
                 break;
             
             // leave from a specified location
             case BotBehavior.Leave: 
+                speed = MAX_SPEED;
                 Vector3 leavedirection = transform.position - targetLoc; 
                 leavedirection.y = 0;
                 transform.LookAt(transform.position + leavedirection);
@@ -59,7 +68,22 @@ public class Turtlebot : MonoBehaviour
                 }
                 break;
 
+            case BotBehavior.Stop:
+                speed = 0;
+                break;
+
+            case BotBehavior.Deploy:
+                speed = MAX_SPEED;
+                
+                VoronoiDiagram voronoi = GameObject.Find("VoronoiVis").GetComponent<VoronoiDiagram>();
+                Vector3 newPos = voronoi.GetDeployPos(indexInAllBots);
+                newPos.y = transform.position.y;
+                transform.LookAt(newPos);
+                transform.Translate(speed * Time.deltaTime * Vector3.forward);
+                break;
+
             default:
+                speed = MAX_SPEED;
                 break;
         }
     }
@@ -73,11 +97,22 @@ public class Turtlebot : MonoBehaviour
 
         switch(botState){
             case BotBehavior.Random:
+                // switch direction randomly
                 float randomAngle = UnityEngine.Random.Range(0f, 360f);
                 transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
                 break;
             case BotBehavior.Leave:
+                // go to random, hope we are far enough away from location
                 ChangeState(BotBehavior.Random, targetLoc);
+                break;
+            case BotBehavior.Deploy:
+                // switch index with collision partner
+                // if(collision.gameObject.tag == "Bot"){
+                //     Turtlebot otherBot = collision.gameObject.GetComponent<Turtlebot>();
+                //     int helper = otherBot.indexInAllBots;
+                //     otherBot.indexInAllBots = indexInAllBots;
+                //     indexInAllBots = helper;
+                // }
                 break;
             default:
                 break;
@@ -85,7 +120,16 @@ public class Turtlebot : MonoBehaviour
     }
 
     void OnCollisionStay(Collision collision){
-        OnCollisionEnter(collision);
+        switch(botState){
+            case BotBehavior.Random:
+                OnCollisionEnter(collision);
+                break;
+            case BotBehavior.Leave:
+                OnCollisionEnter(collision);
+                break;
+            default: 
+                break;
+        }
     }
 
     // selection control: change from selected to unselect or other way round
@@ -130,11 +174,16 @@ public class Turtlebot : MonoBehaviour
                 break;
         } 
     }
+
+    void OnDestroy(){
+        GameManagement.allBots.Remove(this);
+    }
 }
 
 public enum BotBehavior {
     Stop,
     Come,
     Random,
-    Leave
+    Leave,
+    Deploy
 }

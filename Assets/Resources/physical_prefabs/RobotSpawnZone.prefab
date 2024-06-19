@@ -212,4 +212,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   turtlebot: {fileID: 379175321310115693, guid: 6e77c750b0ad54f43bdcdb6ede1a1f43, type: 3}
+  renderer1: {fileID: 9118681908481477403}
+  renderer2: {fileID: 3539318905590374547}
   robotsToSpawn: 3

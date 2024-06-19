@@ -9,6 +9,8 @@ public static class GameManagement
     public static GameState gameState = GameState.Building;
 
     /* ------ manage demonstrating behavior -------------------------- */
+    // all spawned turtlebots
+    public static List<Turtlebot> allBots = new();
     // current control mode while demonstrating
     public static ControlMode currentControlMode = ControlMode.Selection;
     // list of selected bots which bahviors will be changed on behavior change click
@@ -76,17 +78,24 @@ public static class GameManagement
         }
     }
 
+    public static int AddBotToGlobalList(Turtlebot bot){
+        allBots.Add(bot);
+        return allBots.Count - 1;
+    }
+
     public static Color GetColorByBehavior(BotBehavior behavior){
         switch(behavior)
             {
                 case BotBehavior.Stop:
-                    return new Color(132f/255, 98f/255, 103f/255);
+                    return new Color(255f/255, 173f/255, 173f/255);
                 case BotBehavior.Come:
-                    return new Color(135f/255, 168f/255, 120f/255);
+                    return new Color(155f/255, 246f/255, 255f/255);
                 case BotBehavior.Leave:
-                    return new Color(59f/255, 96f/255, 100f/255);
+                    return new Color(255f/255, 214f/255, 165f/255);
                 case BotBehavior.Random:
-                    return new Color(239f/255,189f/255,235f/255);
+                    return new Color(253f/255, 255f/255, 182f/255);
+                case BotBehavior.Deploy:
+                    return new Color(202f/255, 255f/255, 191f/255);
 
                 default:
                     return Color.black;

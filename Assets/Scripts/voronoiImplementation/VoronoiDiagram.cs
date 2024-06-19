@@ -2,28 +2,96 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using csDelaunay;
+using System;
+
+public class VoronoiDiagram : MonoBehaviour {
  
-public class VoronoiDiagram {
- 
-    // The number of polygons/sites we want
-    public int polygonNumber = 200;
+    // --- timestep management -------------
+    private const float UPDATE_STEP = 0.5f;
+    private float pastTime = 0f;
  
     // This is where we will store the resulting data
     private Dictionary<System.Numerics.Vector2, Site> sites;
-    private List<csDelaunay.Edge> edges;
+    private List<Edge> edges;
+    private List<System.Numerics.Vector2> points = new();
+
+    public List<GameObject> walls = new();
  
-    void Start() {
-        // Create your sites (lets call that the center of your polygons)
-        List<System.Numerics.Vector2> points = new();
-        points.Add(new System.Numerics.Vector2(15,10));
-        points.Add(new System.Numerics.Vector2(20,10));
+    void Update(){
+        // update every UPDATE_STEP
+        if(pastTime < UPDATE_STEP){
+            pastTime  += Time.deltaTime;
+        } else {
+            // Create your sites (robots and walls)
+            points.Clear();
+
+            // add robots
+            GameManagement.allBots.ForEach((bot) => {
+                points.Add(new System.Numerics.Vector2(bot.transform.position.x, bot.transform.position.z));
+            });
+
+            // add walls
+            Renderer renderer;
+            walls.ForEach((wall) => {
+                try{
+                    renderer = wall.GetComponent<Renderer>();
+                    points.Add(new System.Numerics.Vector2(renderer.bounds.min.x, renderer.bounds.min.z));
+                    points.Add(new System.Numerics.Vector2(renderer.bounds.max.x, renderer.bounds.max.z));
+                    points.Add(new System.Numerics.Vector2(wall.transform.position.x, wall.transform.position.z));
+                } catch (SystemException){
+                    Debug.Log("wall has been deleted");
+                }
+            });
         
-        //CreateRandomPoint();
+            // Create the bounds of the voronoi diagram
+            // Use Rectf instead of Rect; it's a struct just like Rect and does pretty much the same,
+            // but like that it allows you to run the delaunay library outside of unity (which mean also in another tread)
+            Rectf bounds = new Rectf(-2,-2,4,4);
+        
+            // There is a two ways you can create the voronoi diagram: with or without the lloyd relaxation
+            // Here I used it with 2 iterations of the lloyd relaxation
+            Voronoi voronoi = new Voronoi(points,bounds,5);
+
+            // Now retreive the edges from it, and the new sites position if you used lloyd relaxtion
+            sites = voronoi.SitesIndexedByLocation;
+            edges = voronoi.Edges;
+
+            pastTime = 0;
+        }
+    }
+
+    public Vector3 GetDeployPos(int index) {
+        Debug.Log(index);
+
+        // search for that index in all sites
+        foreach (var kvp in sites)
+        {
+            if(kvp.Value.SiteIndex == index) return new Vector3(kvp.Value.x, 0, kvp.Value.y);
+        }
+
+        return Vector3.zero;
+    }
+
+ 
+    void OnDrawGizmosSelected()
+    {
+        Debug.Log("Gizmo called");
+
+        // Create your sites (lets call that the center of your polygons)
+         //CreateRandomPoint(); //
+        points.Clear();
+        points.Add(new System.Numerics.Vector2(-1,0));
+        points.Add(new System.Numerics.Vector2(-2,1));
+        points.Add(new System.Numerics.Vector2(-2,0));
+        points.Add(new System.Numerics.Vector2(-2,-1));
+        points.Add(new System.Numerics.Vector2(2,1));
+        points.Add(new System.Numerics.Vector2(2,0));
+        points.Add(new System.Numerics.Vector2(2,-1));
        
         // Create the bounds of the voronoi diagram
         // Use Rectf instead of Rect; it's a struct just like Rect and does pretty much the same,
         // but like that it allows you to run the delaunay library outside of unity (which mean also in another tread)
-        Rectf bounds = new Rectf(0,0,40,40);
+        Rectf bounds = new Rectf(-2,-2,4,4);
        
         // There is a two ways you can create the voronoi diagram: with or without the lloyd relaxation
         // Here I used it with 2 iterations of the lloyd relaxation
@@ -37,25 +105,34 @@ public class VoronoiDiagram {
         sites = voronoi.SitesIndexedByLocation;
         edges = voronoi.Edges;
 
-        foreach (KeyValuePair<System.Numerics.Vector2, Site> item in sites)
+        if (edges != null)
         {
-            Debug.Log(item.Key+"=>" + item.Value.ToString());               
-        } 
-        foreach (var item in edges)
-        {
-            Debug.Log(item);
+            // Draw Voronoi edges
+            Gizmos.color = Color.green;
+            foreach (Edge edge in edges)
+            {
+                System.Numerics.Vector2? start = edge.ClippedEnds[LR.LEFT];
+                System.Numerics.Vector2? end = edge.ClippedEnds[LR.RIGHT];
+
+                if (start.HasValue && end.HasValue)
+                {
+                    Gizmos.DrawLine(new Vector3(start.Value.X, 2, start.Value.Y), new Vector3(end.Value.X, 2, end.Value.Y));
+                }
+            }
+
+            // Draw robot positions
+            Gizmos.color = Color.blue;
+            foreach (System.Numerics.Vector2 robotPosition in points)
+            {
+                Gizmos.DrawSphere(new Vector3(robotPosition.X, 2, robotPosition.Y), 0.2f);
+            }
+
+            // draw centroids
+            Gizmos.color = Color.green;
+            foreach (KeyValuePair<System.Numerics.Vector2, Site> kvp in sites)
+            {
+                Gizmos.DrawSphere(new Vector3(kvp.Value.x, 2, kvp.Value.y), 0.2f);
+            }
         }
     }
-   
-    private List<System.Numerics.Vector2> CreateRandomPoint() {
-        // Use Vector2f, instead of Vector2
-        // Vector2f is pretty much the same than Vector2, but like you could run Voronoi in another thread
-        List<System.Numerics.Vector2> points = new List<System.Numerics.Vector2>();
-        for (int i = 0; i < polygonNumber; i++) {
-            points.Add(new System.Numerics.Vector2(Random.Range(0,512), Random.Range(0,512)));
-        }
- 
-        return points;
-    }
- 
-}    
+}  

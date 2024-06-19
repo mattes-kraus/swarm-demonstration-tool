@@ -195,7 +195,7 @@ public class FileHandler : MonoBehaviour
             Destroy(mods.transform.GetChild(i).gameObject);
         }
         
-        GameObject.Find("MetricManager").GetComponent<MetricManagement>().allBots.Clear();
+        GameManagement.allBots.Clear();
     }
 }
 

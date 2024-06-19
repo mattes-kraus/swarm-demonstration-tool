@@ -6,6 +6,8 @@ using UnityEngine;
 public class SpawnZone : MonoBehaviour
 {
     [SerializeField] private GameObject turtlebot;
+    [SerializeField] private Renderer renderer1;
+    [SerializeField] private Renderer renderer2;
     private Transform parent;
 
     public int robotsToSpawn = 3;
@@ -46,7 +48,10 @@ public class SpawnZone : MonoBehaviour
                     spawned = true;
                 }
             }
-        }
+        } 
+        // make invisible when game is running
+        renderer1.enabled = GameManagement.gameState != GameState.Running;
+        renderer2.enabled = GameManagement.gameState != GameState.Running;
     }
 
     void OnTriggerExit(Collider collider){

@@ -26,6 +26,7 @@ public class MetricManagement: MonoBehaviour
     // --- timestep management --------------------------
     private const int UPDATE_STEP = 1;
     private float pastTime = 0f;
+    private bool init = false;
 
     // --- coverage metric ------------------------------
     public const int N_GRIDS_X = 4;
@@ -55,13 +56,20 @@ public class MetricManagement: MonoBehaviour
 
     void Start(){
         // init csvs to write in
-        float[] helper = {0};
-        Utilities.ExportArrayToCSV(helper, "average no color time", "avgNoColorTime.csv");
-        Utilities.ExportArrayToCSV(helper, "average distance to swarm centre", "avgDistToCentre.csv");
-        Utilities.ExportArrayToCSV(helper, "average speed", "avgSpeed.csv");
+        if(!init){
+            float[] helper = {0};
+            Utilities.ExportArrayToCSV(helper, "average no color time", "avgNoColorTime.csv");
+            Utilities.ExportArrayToCSV(helper, "average distance to swarm centre", "avgDistToCentre.csv");
+            Utilities.ExportArrayToCSV(helper, "average speed", "avgSpeed.csv");
 
-        // init lists so we don't get empty list errors
-        avgColorSwitchTimes.Add(0);
+            // init lists so we don't get empty list errors
+            avgColorSwitchTimes.Add(0);
+            
+            // make sure metrics don't reset when resetting the game
+            // DontDestroyOnLoad(gameObject);
+            init = true;
+        }
+
     }
 
     public void ShowCoverage(){
@@ -83,6 +91,9 @@ public class MetricManagement: MonoBehaviour
     }
 
     void UpdateColorVisits(){
+        foreach (var color in colorVisits){
+            print(color.ToString());
+        }
         Utilities.ExportArrayToCSV(colorVisits, "Appearance of color combinations", "colorVisits.csv");
     }
     void UpdateAverageNoColorTime(){

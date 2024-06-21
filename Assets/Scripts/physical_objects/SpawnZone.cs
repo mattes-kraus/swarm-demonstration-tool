@@ -49,6 +49,11 @@ public class SpawnZone : MonoBehaviour
                 }
             }
         } 
+
+        if(GameManagement.gameState == GameState.Running){
+            spawned = true;
+        }
+        
         // make invisible when game is running
         renderer1.enabled = GameManagement.gameState != GameState.Running;
         renderer2.enabled = GameManagement.gameState != GameState.Running;

@@ -1,17 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using csDelaunay;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ToggleCoverage : MonoBehaviour
-{
-    [SerializeField] Toggle toggle;
-
-    void Start(){
-        toggle.onValueChanged.AddListener((bool value) => ToggleCoverageMetric(value));
-    }
-    
-    void ToggleCoverageMetric(bool show){
+public class ToggleManager : MonoBehaviour
+{    
+    public void ToggleCoverageMetric(bool show){
         GameObject metricManager = GameObject.Find("MetricManager");
         if(show){
             // show metric
@@ -24,5 +19,9 @@ public class ToggleCoverage : MonoBehaviour
                 Destroy(metricManager.transform.GetChild(i).gameObject);
             }
         }
+    }
+
+    public void ToggleVoronoiVisu(bool enableVornoi){
+        VoronoiDiagram.visuOn = enableVornoi;
     }
 }

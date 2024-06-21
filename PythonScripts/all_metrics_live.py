@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+import matplotlib.patches as patches
 from matplotlib import style
 import numpy as np
 
@@ -7,33 +8,32 @@ style.use('fivethirtyeight')
 
 # --- Setup the figure and subplots ------------------------------------
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+plt.rcParams['font.family'] = 'Times New Roman'
 
 # --- read the data ----------------------------------------------------
 def read_data_colorVisits():
-    with open("colorVisits.csv", 'r') as file:
+    with open("./Build/Metrics/colorVisits.csv", 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
-    for line in graph_data:
-        print(line)
     heights = [int(line.strip()) for line in graph_data if line.strip()]
     return heights
 
 def read_data_noColorTime():
-    with open("avgNoColorTime.csv", 'r') as file:
+    with open("./Build/Metrics/avgNoColorTime.csv", 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     time_series = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
     return time_series
 
 def read_data_avgDistToCentre():
-    with open("avgDistToCentre.csv", 'r') as file:
+    with open("./Build/Metrics/avgDistToCentre.csv", 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     heights = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
     return heights
 
 def read_data_avgSpeed():
-    with open("avgSpeed.csv", 'r') as file:
+    with open("./Build/Metrics/avgSpeed.csv", 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     heights = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
@@ -90,7 +90,7 @@ def animate_avgSpeed(i):
     ax4.fill_between(x, y, where=(y < 0.20), color='blue', alpha=0.5, interpolate=True) # color background
     ax4.fill_between(x, y, where=(y >= 0.20), color='yellow', alpha=0.5, interpolate=True)
 
-    ax4.set_ylim([0, 0.31]) # hardcode ylim 4 so we can better see if value is high or low
+    ax4.set_ylim([0, 0.35]) # hardcode ylim to little over max speed so we can better see if value is high or low
 
     ax4.set_title('Average speed in the swarm')
     ax4.set_xlabel('Time')

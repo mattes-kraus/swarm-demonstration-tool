@@ -1,9 +1,7 @@
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
-using System.Drawing.Text;
-using UnityEditor.PackageManager;
+using UnityEngine.SceneManagement;
 
 [System.Serializable]
 public class GameObjectData
@@ -63,7 +61,7 @@ public class FileHandler : MonoBehaviour
 
     public static void ImportGameObject(string filePath, GameObject parent)
     {
-        ResetArena();
+        // ResetArena();
         try{
             string json = File.ReadAllText(filePath);
             GameObjectData gameObjectData = JsonUtility.FromJson<GameObjectData>(json);
@@ -172,30 +170,36 @@ public class FileHandler : MonoBehaviour
 
     public static void ResetArena(){
         // destroy arena mods like groundsticker, walls,...
-        GameObject mods = GameObject.Find("ArenaModifications");
-        int childCount = mods.transform.childCount;
-        for (int i = 0; i < childCount; i++)
-        {
-            Destroy(mods.transform.GetChild(i).gameObject);
-        }
+    //     GameObject mods = GameObject.Find("ArenaModifications");
+    //     int childCount = mods.transform.childCount;
+    //     for (int i = 0; i < childCount; i++)
+    //     {
+    //         Destroy(mods.transform.GetChild(i).gameObject);
+    //     }
 
-        // destroy beaconcs
-        mods = GameObject.Find("Beacons");
-        childCount = mods.transform.childCount;
-        for (int i = 0; i < childCount; i++)
-        {
-            Destroy(mods.transform.GetChild(i).gameObject);
-        }
+    //     // destroy beaconcs
+    //     mods = GameObject.Find("Beacons");
+    //     childCount = mods.transform.childCount;
+    //     for (int i = 0; i < childCount; i++)
+    //     {
+    //         Destroy(mods.transform.GetChild(i).gameObject);
+    //     }
 
-        // destroy beaconcs
-        mods = GameObject.Find("Robots");
-        childCount = mods.transform.childCount;
-        for (int i = 0; i < childCount; i++)
-        {
-            Destroy(mods.transform.GetChild(i).gameObject);
-        }
+    //     // destroy beaconcs
+    //     mods = GameObject.Find("Robots");
+    //     childCount = mods.transform.childCount;
+    //     for (int i = 0; i < childCount; i++)
+    //     {
+    //         Destroy(mods.transform.GetChild(i).gameObject);
+    //     }
         
+    //     GameManagement.allBots.Clear();
+        SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+        GameManagement.gameState = GameState.Building;
         GameManagement.allBots.Clear();
+        GameManagement.selectedBots.Clear();
+        GameManagement.currentControlMode = ControlMode.Selection;
+        GameManagement.targetLocSelectActive = false;
     }
 }
 

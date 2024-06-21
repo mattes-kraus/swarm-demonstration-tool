@@ -16,12 +16,22 @@ public class Turtlebot : MonoBehaviour
 
     void Start(){
         indexInAllBots = GameManagement.AddBotToGlobalList(this);
+        Debug.Log(indexInAllBots);
     }
 
     void Update()
     {
+        // stop moving and updating when game is not running
         if(GameManagement.gameState != GameState.Running){
             return;
+        }
+
+        // unselect in case we are in beacon control right now
+        if(GameManagement.currentControlMode != ControlMode.Selection){
+            GameManagement.selectedBots.Remove(this);
+            selectedMarker.GetComponent<Renderer>().material.SetColor("_EmissionColor", Color.black);
+            selectedMarker.GetComponent<Renderer>().material.EnableKeyword("_EMISSION");
+            selectedMarker.GetComponent<Renderer>().UpdateGIMaterials();
         }
 
         // indicate robot state via light color
@@ -54,7 +64,7 @@ public class Turtlebot : MonoBehaviour
                 Vector2 targetPos = new Vector2(targetLoc.x, targetLoc.z);
                 float dist = Vector2.Distance(currPos, targetPos);
 
-                // approach
+                // approach location slowly
                 if(dist <= 2*speed){
                     speed =  dist/2;   
                 }
@@ -75,8 +85,7 @@ public class Turtlebot : MonoBehaviour
             case BotBehavior.Deploy:
                 speed = MAX_SPEED;
                 
-                VoronoiDiagram voronoi = GameObject.Find("VoronoiVis").GetComponent<VoronoiDiagram>();
-                Vector3 newPos = voronoi.GetDeployPos(indexInAllBots);
+                Vector3 newPos = VoronoiDiagram.GetDeployPos(indexInAllBots);
                 newPos.y = transform.position.y;
                 transform.LookAt(newPos);
                 transform.Translate(speed * Time.deltaTime * Vector3.forward);

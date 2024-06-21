@@ -15,7 +15,7 @@ public class PhysicalObject : MonoBehaviour
 
         // for computing voronoi, we need the walls
         if(type == ObjectType.Wall){
-            GameObject.Find("VoronoiVis").GetComponent<VoronoiDiagram>().walls.Add(gameObject);
+            VoronoiDiagram.walls.Add(gameObject);
         }
     }
 

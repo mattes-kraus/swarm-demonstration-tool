@@ -25,6 +25,7 @@ public static class Utilities{
 
     public static void ExportArrayToCSV(float[] dataArray, String headers, string filePath)
     {
+        filePath = "./Metrics/" + filePath;
         // Create a string builder to store CSV data
         System.Text.StringBuilder csvContent = new System.Text.StringBuilder();
 
@@ -45,6 +46,7 @@ public static class Utilities{
 
     public static void ExportArrayToCSV(int[] dataArray, String headers, string filePath)
     {
+        filePath = "./Metrics/" + filePath;
         // Create a string builder to store CSV data
         System.Text.StringBuilder csvContent = new System.Text.StringBuilder();
 
@@ -65,6 +67,8 @@ public static class Utilities{
 
     public static void AppendLineToFile(String filePath, String lineToAppend)
     {
+        filePath = "./Metrics/" + filePath;
+
         try
         {
             // Check if the file exists

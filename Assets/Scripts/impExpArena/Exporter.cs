@@ -11,10 +11,10 @@ public class Exporter : MonoBehaviour, IPointerDownHandler
     [SerializeField] private GameObject beaconsToSave;
     [SerializeField] private TMP_InputField input;
     public void OnPointerDown(PointerEventData pointerEventData){
-        string path = input.text + ".json";
+        string path = "./Saved_Arenas/" + input.text + ".json";
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ExportGameObject(modificationsToSave, path);
         
-        path = input.text + "_beacons.json";
+        path = "./Saved_Arenas/" + input.text + "_beacons.json";
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ExportBeacons(beaconsToSave, path);
     }
 }

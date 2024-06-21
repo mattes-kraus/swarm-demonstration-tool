@@ -12,9 +12,9 @@ public class Importer : MonoBehaviour, IPointerDownHandler
     [SerializeField] private TMP_InputField input;
 
     public void OnPointerDown(PointerEventData pointerEventData){
-        string path = "./Saved_Arenas/" + input.text + ".json";
+        string path = "./SavedArenas/" + input.text + ".json";
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ImportGameObject(path, modParent);
-        path = "./Saved_Arenas/" + input.text + "_beacons.json";
+        path = "./SavedArenas/" + input.text + "_beacons.json";
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ImportBeacons(path, beaconParent);
     }
 }

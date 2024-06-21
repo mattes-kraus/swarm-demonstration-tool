@@ -26,6 +26,12 @@ public static class Utilities{
     public static void ExportArrayToCSV(float[] dataArray, String headers, string filePath)
     {
         filePath = "./Metrics/" + filePath;
+        try{
+            Directory.CreateDirectory("./Metrics");
+        } catch(SystemException e){
+            // it's alright, then the directory already exists
+        }
+        
         // Create a string builder to store CSV data
         System.Text.StringBuilder csvContent = new System.Text.StringBuilder();
 
@@ -47,6 +53,12 @@ public static class Utilities{
     public static void ExportArrayToCSV(int[] dataArray, String headers, string filePath)
     {
         filePath = "./Metrics/" + filePath;
+        try{
+            Directory.CreateDirectory("./Metrics");
+        } catch(SystemException e){
+            // it's alright, then the directory already exists
+        }
+
         // Create a string builder to store CSV data
         System.Text.StringBuilder csvContent = new System.Text.StringBuilder();
 
@@ -68,6 +80,11 @@ public static class Utilities{
     public static void AppendLineToFile(String filePath, String lineToAppend)
     {
         filePath = "./Metrics/" + filePath;
+        try{
+            Directory.CreateDirectory("./Metrics");
+        } catch(SystemException e){
+            // it's alright, then the directory already exists
+        }
 
         try
         {

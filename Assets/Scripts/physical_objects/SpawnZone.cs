@@ -46,17 +46,19 @@ public class SpawnZone : MonoBehaviour
                 timeCounter += Time.deltaTime;
                 if(timeCounter >= 3) {
                     spawned = true;
+                    renderer1.enabled = false;
+                    renderer2.enabled = false;
+                    gameObject.layer = 2;
                 }
             }
         } 
 
         if(GameManagement.gameState == GameState.Running){
             spawned = true;
+            renderer1.enabled = false;
+            renderer2.enabled = false;
+            gameObject.layer = 2;
         }
-        
-        // make invisible when game is running
-        renderer1.enabled = GameManagement.gameState != GameState.Running;
-        renderer2.enabled = GameManagement.gameState != GameState.Running;
     }
 
     void OnTriggerExit(Collider collider){

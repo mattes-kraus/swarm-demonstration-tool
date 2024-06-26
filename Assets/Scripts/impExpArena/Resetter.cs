@@ -8,8 +8,4 @@ public class Resetter : MonoBehaviour, IPointerDownHandler
     public void OnPointerDown(PointerEventData pointerEventData){
         FileHandler.ResetArena();
     }
-
-    public void Test(){
-        
-    }
 }

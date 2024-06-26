@@ -9,7 +9,7 @@ public class Turtlebot : MonoBehaviour
     public float speed = 0.31f; 
     public BotBehavior botState = BotBehavior.Random;
     public Vector3 targetLoc;
-    public int indexInAllBots;
+    public int indexInAllBots; // to get position in voronoi diagram
     [SerializeField] private GameObject selectedMarker;
     [SerializeField] private GameObject stateIndicator;
     private const float MAX_SPEED = 0.31f; 

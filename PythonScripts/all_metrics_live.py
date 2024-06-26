@@ -8,7 +8,17 @@ style.use('fivethirtyeight')
 
 # --- Setup the figure and subplots ------------------------------------
 fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
-plt.rcParams['font.family'] = 'Times New Roman'
+textsize = 14
+plt.rcParams.update({
+    'font.family': 'Times New Roman',   # Serifen Schrift für LateX-Kompatibilität 
+    'axes.titlesize': textsize,         # Titel der Achsen
+    'axes.labelsize': textsize,         # Beschriftung der Achsen
+    'xtick.labelsize': textsize,        # Tick-Labels der x-Achse
+    'ytick.labelsize': textsize,        # Tick-Labels der y-Achse
+    'legend.fontsize': textsize,        # Legenden-Schriftgröße
+    'figure.titlesize': textsize,       # Titel der Figur})
+    'axes.titleweight': 'bold',         # Achsentitel fett
+})
 
 # --- read the data ----------------------------------------------------
 def read_data_colorVisits():
@@ -42,7 +52,7 @@ def read_data_avgSpeed():
 # --- Define the plots ------------------------------------------------------
 def animate_colorVisits(i):
     heights = read_data_colorVisits()
-    bar_labels = ['white-white', 'white-black', 'black-white', 'black-black']
+    bar_labels = ['w-w', 'w-b', 'b-w', 'b-b']
 
     if len(heights) != len(bar_labels):
         print(f"Error: Number of data points ({len(heights)}) does not match number of labels ({len(bar_labels)}).")
@@ -52,16 +62,16 @@ def animate_colorVisits(i):
     ax1.bar(range(len(heights)), heights, tick_label=bar_labels)
 
     ax1.set_title('Color visits frequency')
-    ax1.set_xlabel('Color visits')
     ax1.set_ylabel('Frequency')
+    ax1.set_xlabel('Color trajectory with w-white, b-black')
 
 def animate_noColorTime(i):
     heights = read_data_noColorTime()
     ax2.clear()
     ax2.plot(range(len(heights)), heights)
     ax2.set_title('Average time between color changes')
-    ax2.set_xlabel('Time')
-    ax2.set_ylabel('Average travel time')
+    ax2.set_xlabel('Time in s')
+    ax2.set_ylabel('Average travel time in s')
 
 def animate_avgDistToCentre(i):
     distances = read_data_avgDistToCentre()
@@ -69,34 +79,37 @@ def animate_avgDistToCentre(i):
     x = range(len(distances))
     y = np.array(distances)
 
-    ax3.plot(x, y, 'k-', label='y')
-    ax3.fill_between(x, y, where=(y < 1), color='green', alpha=0.5, interpolate=True) # color background
-    ax3.fill_between(x, y, where=(y >= 1), color='red', alpha=0.5, interpolate=True)
+    ax3.plot(x, y, 'k-', label='Avg dist to swarm centre')
+    ax3.fill_between(x, y, where=(y < 1), color='green', alpha=0.5, interpolate=True, label="Dense") # color background
+    ax3.fill_between(x, y, where=(y >= 1), color='red', alpha=0.5, interpolate=True, label="Spread")
 
     ax3.set_ylim([0, 4]) # hardcode ylim 4 so we can better see if value is high or low
 
     ax3.set_title('Average distance of a robot to swarm centre')
-    ax3.set_xlabel('Time')
-    ax3.set_ylabel('Average distance')
+    ax3.set_xlabel('Time in s')
+    ax3.set_ylabel('Average distance in m')
 
-# Define the animation function for the fourth subplot
+    ax3.legend()
+
 def animate_avgSpeed(i):
     distances = read_data_avgSpeed()
     ax4.clear()
     x = range(len(distances))
     y = np.array(distances)
 
-    ax4.plot(x, y, 'k-', label='y')
-    ax4.fill_between(x, y, where=(y < 0.20), color='blue', alpha=0.5, interpolate=True) # color background
-    ax4.fill_between(x, y, where=(y >= 0.20), color='yellow', alpha=0.5, interpolate=True)
+    ax4.plot(x, y, 'k-', label='Avg robot speed')
+    ax4.fill_between(x, y, where=(y < 0.20), color='blue', alpha=0.5, interpolate=True, label="Static") # color background
+    ax4.fill_between(x, y, where=(y >= 0.20), color='yellow', alpha=0.5, interpolate=True, label="Dynamic")
 
     ax4.set_ylim([0, 0.35]) # hardcode ylim to little over max speed so we can better see if value is high or low
 
     ax4.set_title('Average speed in the swarm')
-    ax4.set_xlabel('Time')
-    ax4.set_ylabel('Average speed')
+    ax4.set_xlabel('Time in s')
+    ax4.set_ylabel('Average speed in m/s')
 
-# Set up the animation
+    ax4.legend()
+
+# Set up the animation so the data updates every second
 ani1 = animation.FuncAnimation(fig, animate_colorVisits,        interval=1000)
 ani2 = animation.FuncAnimation(fig, animate_noColorTime,        interval=1000)
 ani3 = animation.FuncAnimation(fig, animate_avgDistToCentre,    interval=1000)

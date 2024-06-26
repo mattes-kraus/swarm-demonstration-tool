@@ -15,13 +15,13 @@ public class Exporter : MonoBehaviour, IPointerDownHandler
         string path = "./SavedArenas/" + input.text + ".json";
         try{
             Directory.CreateDirectory("./SavedArenas/");
-        } catch(SystemException e){
+        } catch(SystemException){
             // it's alright, then the directory already exists
         }
 
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ExportGameObject(modificationsToSave, path);
         
-        path = "./Saved_Arenas/" + input.text + "_beacons.json";
+        path = "./SavedArenas/" + input.text + "_beacons.json";
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ExportBeacons(beaconsToSave, path);
     }
 }

@@ -20,7 +20,6 @@ public class MetricManagement: MonoBehaviour
     
     // -- metric helpers --------------------------------
     private float totalDistToCenter;
-    private float totalNoColorTime = 0;
     public List<float> avgColorSwitchTimes = new();
 
     // --- timestep management --------------------------
@@ -91,9 +90,6 @@ public class MetricManagement: MonoBehaviour
     }
 
     void UpdateColorVisits(){
-        foreach (var color in colorVisits){
-            print(color.ToString());
-        }
         Utilities.ExportArrayToCSV(colorVisits, "Appearance of color combinations", "colorVisits.csv");
     }
     void UpdateAverageNoColorTime(){

@@ -22,8 +22,6 @@ public class ColorTracker : MonoBehaviour
 
     //--- what colors visited metric ------------------------------------------
     private ColorWithThreshhold lastColor = ColorWithThreshhold.Nothing;
-    private float cooldown = 0;
-    private const float COOLDOWN = 0.5f;
 
     void Start(){
         metricManager = GameObject.Find("MetricManager").GetComponent<MetricManagement>();
@@ -33,12 +31,6 @@ public class ColorTracker : MonoBehaviour
         // count travel time
         if(countTime && GameManagement.gameState == GameState.Running){
             currentTime += Time.deltaTime;
-        }
-
-        // checks that we update color change only every 0.5s
-        if (cooldown > 0 && GameManagement.gameState == GameState.Running) {
-            cooldown -= Time.deltaTime;
-            if(cooldown < 0) cooldown = 0;
         }
 
         // measure real speed
@@ -55,7 +47,7 @@ public class ColorTracker : MonoBehaviour
     void OnTriggerEnter(Collider collider){
         try{
             // if we hit a groundsticker we need to update our color metrics
-            if(collider.gameObject.GetComponent<PhysicalObject>().type == ObjectType.Groundsticker && cooldown == 0){
+            if(collider.gameObject.GetComponent<PhysicalObject>().type == ObjectType.Groundsticker){
 
                 // update last color metric but only if we haven't been already on that sticker
                 if(lastColor == ColorWithThreshhold.Nothing || !countTime) return;
@@ -73,7 +65,6 @@ public class ColorTracker : MonoBehaviour
                 currentTime = 0;
                 metricManager.avgColorSwitchTimes.Add(colorSwitchTimes.Average());
                 countTime = false;
-                cooldown = COOLDOWN;
             }
         } catch (SystemException){
             // not too bad, then collision is just not with groundsticker

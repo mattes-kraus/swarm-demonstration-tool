@@ -28,7 +28,7 @@ public static class Utilities{
         filePath = "./Metrics/" + filePath;
         try{
             Directory.CreateDirectory("./Metrics");
-        } catch(SystemException e){
+        } catch (SystemException){
             // it's alright, then the directory already exists
         }
         
@@ -55,7 +55,7 @@ public static class Utilities{
         filePath = "./Metrics/" + filePath;
         try{
             Directory.CreateDirectory("./Metrics");
-        } catch(SystemException e){
+        } catch(SystemException){
             // it's alright, then the directory already exists
         }
 
@@ -82,7 +82,7 @@ public static class Utilities{
         filePath = "./Metrics/" + filePath;
         try{
             Directory.CreateDirectory("./Metrics");
-        } catch(SystemException e){
+        } catch(SystemException){
             // it's alright, then the directory already exists
         }
 

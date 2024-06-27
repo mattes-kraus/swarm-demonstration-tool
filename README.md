@@ -6,7 +6,7 @@ Read my report for more information.
 ## Setup
 
 - clone the repository (```git clone https://github.com/StudentWorkCPS/swarm-demonstration-tool```)
-- navigate to Assets/submodules/ and execute ```git clone https://github.com/jfg8/csDelaunay.git```
+- navigate to Assets/Submodules/ and execute ```git clone https://github.com/jfg8/csDelaunay.git```
 - open Unity Hub
 - press Add and add the swarm-demonstration-tool
 - open the new swarm-demonstration-tool project from Unity Hub

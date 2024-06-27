@@ -36,7 +36,11 @@ public class SpawnZone : MonoBehaviour
                 // move robot to its spawn zone
                 float noise_x = UnityEngine.Random.Range(-transform.localScale.x/2, transform.localScale.x/2);
                 float noise_z = UnityEngine.Random.Range(-transform.localScale.z/2, transform.localScale.z/2);
-                robot.transform.SetPositionAndRotation(new Vector3(transform.position.x + noise_x, robotPos.y, transform.position.z + noise_z), Quaternion.identity);   
+                
+                float newX = Clamp(transform.position.x + noise_x, GameManagement.ARENA_X_MIN, GameManagement.ARENA_X_MAX);
+                float newZ = Clamp(transform.position.z + noise_z, GameManagement.ARENA_Z_MIN, GameManagement.ARENA_Z_MAX);
+
+                robot.transform.SetPositionAndRotation(new Vector3(newX, robotPos.y, newZ), Quaternion.identity);   
 
                 // abbruchbedingungen
                 retries++;
@@ -66,5 +70,10 @@ public class SpawnZone : MonoBehaviour
             Destroy(collider.gameObject);
             currentRobots--;
         }
+    }
+
+    private float Clamp(float value, float min, float max)
+    {
+        return Math.Max(min, Math.Min(value, max));
     }
 }

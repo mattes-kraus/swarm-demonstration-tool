@@ -169,37 +169,17 @@ public class FileHandler : MonoBehaviour
     }
 
     public static void ResetArena(){
-        // destroy arena mods like groundsticker, walls,...
-    //     GameObject mods = GameObject.Find("ArenaModifications");
-    //     int childCount = mods.transform.childCount;
-    //     for (int i = 0; i < childCount; i++)
-    //     {
-    //         Destroy(mods.transform.GetChild(i).gameObject);
-    //     }
-
-    //     // destroy beaconcs
-    //     mods = GameObject.Find("Beacons");
-    //     childCount = mods.transform.childCount;
-    //     for (int i = 0; i < childCount; i++)
-    //     {
-    //         Destroy(mods.transform.GetChild(i).gameObject);
-    //     }
-
-    //     // destroy beaconcs
-    //     mods = GameObject.Find("Robots");
-    //     childCount = mods.transform.childCount;
-    //     for (int i = 0; i < childCount; i++)
-    //     {
-    //         Destroy(mods.transform.GetChild(i).gameObject);
-    //     }
-        
-    //     GameManagement.allBots.Clear();
+        // resets everything non-static
         SceneManager.LoadScene( SceneManager.GetActiveScene().name );
+
+        // static classes have to be resetted manually
         GameManagement.gameState = GameState.Building;
         GameManagement.allBots.Clear();
         GameManagement.selectedBots.Clear();
         GameManagement.currentControlMode = ControlMode.Selection;
         GameManagement.targetLocSelectActive = false;
+        
+        VoronoiDiagram.visuOn = false;
     }
 }
 

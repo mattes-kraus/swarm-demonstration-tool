@@ -18,3 +18,7 @@ To run the tool, open your explorer and navigate to swarm-demonstration-tool/Bui
 SwarmDemonstration.exe
 
 To see the metrics, navigate to the root directory and execute ```python3 ./PythonScripts/all_metrics_live.py```.
+
+## Videos
+There are videos of all three missions proposed in the report. To see them, go to /Videos and open them
+with the tool of your choice, e.g. VLC Media Player.

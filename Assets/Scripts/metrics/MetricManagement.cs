@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO.Compression;
 using System.Linq;
 using UnityEditor;
@@ -25,7 +26,6 @@ public class MetricManagement: MonoBehaviour
     // --- timestep management --------------------------
     private const int UPDATE_STEP = 1;
     private float pastTime = 0f;
-    private bool init = false;
 
     // --- coverage metric ------------------------------
     public const int N_GRIDS_X = 4;
@@ -55,19 +55,22 @@ public class MetricManagement: MonoBehaviour
 
     void Start(){
         // init csvs to write in
-        if(!init){
-            float[] helper = {0};
-            Utilities.ExportArrayToCSV(helper, "average no color time", "avgNoColorTime.csv");
-            Utilities.ExportArrayToCSV(helper, "average distance to swarm centre", "avgDistToCentre.csv");
-            Utilities.ExportArrayToCSV(helper, "average speed", "avgSpeed.csv");
+        Utilities.ExportArrayToCSV("0", "average no color time", "avgNoColorTime.csv");
+        Utilities.ExportArrayToCSV("0", "average distance to swarm centre", "avgDistToCentre.csv");
+        Utilities.ExportArrayToCSV("0", "average speed", "avgSpeed.csv");
+        
+        // generate header line for coverage metric
+        String header = "";
+        String initRow = "";
+        for(int i = 0; i < N_GRIDS_X; i++){
+            for(int j = 0; j < N_GRIDS_Z; j++){
+                header += "gridpos" + i + ":" + j + ",";
+                initRow += "0,";
+        }}
+        Utilities.ExportArrayToCSV(initRow, header, "coverage.csv");
 
-            // init lists so we don't get empty list errors
-            avgColorSwitchTimes.Add(0);
-            
-            // make sure metrics don't reset when resetting the game
-            // DontDestroyOnLoad(gameObject);
-            init = true;
-        }
+        // init lists so we don't get empty list errors
+        avgColorSwitchTimes.Add(0);
 
     }
 
@@ -90,7 +93,11 @@ public class MetricManagement: MonoBehaviour
     }
 
     void UpdateColorVisits(){
-        Utilities.ExportArrayToCSV(colorVisits, "Appearance of color combinations", "colorVisits.csv");
+        String row = "";
+        for(int i = 0; i < 4; i++){
+            row += colorVisits[i] + "\n";
+        }
+        Utilities.ExportArrayToCSV(row, "Appearance of color combinations", "colorVisits.csv");
     }
     void UpdateAverageNoColorTime(){
         avgColorSwitchTime = avgColorSwitchTimes.Average();
@@ -125,7 +132,15 @@ public class MetricManagement: MonoBehaviour
             lastVisitTime[cellX, cellZ] = 0;
         });
 
-        Utilities.Stringify2DArray(lastVisitTime, N_GRIDS_X, N_GRIDS_Z);
+        String row = "";
+        for(int i = 0; i < N_GRIDS_X; i++){
+            for(int j = 0; j < N_GRIDS_Z; j++){
+                row += lastVisitTime[i, j] + ",";
+        }}
+        Utilities.AppendLineToFile("coverage.csv", row);
+
+        // print coverage to the console
+        // Utilities.Stringify2DArray(lastVisitTime, N_GRIDS_X, N_GRIDS_Z);
     }
     void UpdateAvgDistToCentre(){
         // calc swarm centre

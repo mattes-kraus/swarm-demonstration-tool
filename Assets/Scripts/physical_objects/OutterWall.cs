@@ -11,7 +11,7 @@ public class OutterWall : MonoBehaviour
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
 
-        // Überprüfe, ob der Raycast ein Collider trifft und ob lightbulb ausgewählt ist
+        // Check whether the raycast hits a collider and whether lightbulb is selected
         if (Physics.Raycast(ray, out hitInfo) && GameManagement.newElementType == ObjectType.Lightbulb)
         {
             Instantiate(lightbulb, hitInfo.point, Quaternion.identity, parent);

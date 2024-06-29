@@ -27,8 +27,6 @@ public class ColorField : MonoBehaviour
         if (GameManagement.selectedObject != null) {
             Color newColor = new Color(brightness, brightness, brightness);
             GameManagement.selectedObject.gameObject.GetComponent<Renderer>().material.color = newColor;
-            // GameManagement.selectedObject.gameObject.GetComponent<Renderer>().material.SetColor("_EmissionColor", newColor);
-            // GameManagement.selectedObject.gameObject.GetComponent<Renderer>().UpdateGIMaterials();
         }
     }
 }

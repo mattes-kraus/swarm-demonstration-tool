@@ -82,6 +82,7 @@ public static class VoronoiDiagram {
     }
 
  
+    // here, you can visualise the whole voronoi in the unity editor. Uncomment to see
     // static void OnDrawGizmosSelected()
     // {
     //     Debug.Log("Gizmo called");

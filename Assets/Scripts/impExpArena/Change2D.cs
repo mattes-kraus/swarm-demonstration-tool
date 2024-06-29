@@ -11,6 +11,7 @@ public class Change2D : MonoBehaviour, IPointerDownHandler
     [SerializeField] private GameObject buttonAt3D;
     private bool is2D = true;
 
+    // alternates between 2D and 3D on click
     public void OnPointerDown(PointerEventData pointerEventData){
         is2D = !is2D;
 

@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// button for changing the current behaviours
 public class SetBehavior : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private BotBehavior newState;

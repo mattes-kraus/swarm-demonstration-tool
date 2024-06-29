@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class IndicateSelectedPos : MonoBehaviour
 {
+    // behaviour for the pin which shows the current selected position 
     void Update()
     {
         // make invisible as long we are building the arena 

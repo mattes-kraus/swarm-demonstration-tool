@@ -14,6 +14,7 @@ public class TargetLocation : MonoBehaviour
     void Start(){
         input.onValueChanged.AddListener((position) => {
 
+            // pattern to detect a tuple of two floats
             string pattern = @"\((-?\d+(\,\d*)?)\/(-?\d+(\,\d*)?)\)";
             try {
                 Match match = Regex.Match(position, pattern);

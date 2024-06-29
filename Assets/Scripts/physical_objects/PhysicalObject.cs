@@ -3,9 +3,8 @@ using UnityEngine;
 public class PhysicalObject : MonoBehaviour
 {
     [SerializeField] public ObjectType type;
-     // Das Bild für den Mauszeiger, wenn er über dem UI-Element schwebt
+     // The image for the mouse pointer when it hovers over the UI element
     [SerializeField] private Texture2D cursorTexture;
-    // if element is currently disabled for clicks, we want to propagate click to the ground
 
     void Start(){
         // For computing voronoi we keep track of walls. 

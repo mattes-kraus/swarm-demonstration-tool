@@ -35,7 +35,7 @@ public class ModificationAdder : MonoBehaviour
     }
 
     public void AddNewElement(Vector3 pos){
-        // Instanziere das GameObject an der Position des Hits
+        // Instantiate the GameObject at the position of the hit
         switch (GameManagement.newElementType)
         {
             case ObjectType.Groundsticker:

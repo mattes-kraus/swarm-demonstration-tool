@@ -42,11 +42,11 @@ public class SpawnZone : MonoBehaviour
 
                 robot.transform.SetPositionAndRotation(new Vector3(newX, robotPos.y, newZ), Quaternion.identity);   
 
-                // abbruchbedingungen
+                // termination condition
                 retries++;
                 timeCounter = 0;
             } else {
-                // 3 sekunden still in der spawn zone stehen zum abbruch
+                // stand still for three seconds to be sure every robot spawned correctly
                 timeCounter += Time.deltaTime;
                 if(timeCounter >= 3) {
                     spawned = true;
@@ -65,6 +65,7 @@ public class SpawnZone : MonoBehaviour
         }
     }
 
+    // destroy robots which are not in the spwan zone anymore
     void OnTriggerExit(Collider collider){
         if(collider.gameObject.CompareTag("Bot") && !spawned){
             Destroy(collider.gameObject);

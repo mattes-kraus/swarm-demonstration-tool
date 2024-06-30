@@ -1,6 +1,6 @@
+import os
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
-import matplotlib.patches as patches
 from matplotlib import style
 import numpy as np
 
@@ -21,29 +21,32 @@ plt.rcParams.update({
 })
 
 # --- read the data ----------------------------------------------------
+
+metric_path = os.path.join(".", "Build", "Metrics")
+
 def read_data_colorVisits():
-    with open("./Build/Metrics/colorVisits.csv", 'r') as file:
+    with open(os.path.join(metric_path, "colorVisits.csv"), 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     heights = [int(line.strip()) for line in graph_data if line.strip()]
     return heights
 
 def read_data_noColorTime():
-    with open("./Build/Metrics/avgNoColorTime.csv", 'r') as file:
+    with open(os.path.join(metric_path, "avgNoColorTime.csv"), 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     time_series = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
     return time_series
 
 def read_data_avgDistToCentre():
-    with open("./Build/Metrics/avgDistToCentre.csv", 'r') as file:
+    with open(os.path.join(metric_path, "avgDistToCentre.csv"), 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     heights = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
     return heights
 
 def read_data_avgSpeed():
-    with open("./Build/Metrics/avgSpeed.csv", 'r') as file:
+    with open(os.path.join(metric_path, "avgSpeed.csv"), 'r') as file:
         graph_data = file.readlines()
     graph_data = graph_data[1:]
     heights = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]

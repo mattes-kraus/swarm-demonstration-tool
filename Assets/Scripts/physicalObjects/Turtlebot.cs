@@ -136,6 +136,11 @@ public class Turtlebot : MonoBehaviour
             case BotBehavior.Leave:
                 OnCollisionEnter(collision);
                 break;
+            case BotBehavior.Deploy:
+                if(collision.gameObject.CompareTag("Bot")){
+                    transform.Translate(Vector3.right*Time.deltaTime * speed);
+                }
+                break;
             default: 
                 break;
         }
@@ -166,17 +171,17 @@ public class Turtlebot : MonoBehaviour
             case BotBehavior.Random:
                 float randomAngle = UnityEngine.Random.Range(0f, 360f);
                 transform.rotation = Quaternion.Euler(0f, randomAngle, 0f);
-                speed = 0.31f;
+                speed = MAX_SPEED;
                 break;
 
             // move towards specified location
             case BotBehavior.Come:
-                speed = 0.31f;
+                speed = MAX_SPEED;
                 break;
 
             // leave from a specified location
             case BotBehavior.Leave:
-                speed = 0.31f;
+                speed = MAX_SPEED;
                 break;
 
             default:

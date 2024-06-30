@@ -11,17 +11,19 @@ public class Exporter : MonoBehaviour, IPointerDownHandler
     [SerializeField] private GameObject modificationsToSave;
     [SerializeField] private GameObject beaconsToSave;
     [SerializeField] private TMP_InputField input;
+
+    // export the arena configuration to a json file
     public void OnPointerDown(PointerEventData pointerEventData){
-        string path = "./SavedArenas/" + input.text + ".json";
+        string path = "." + Path.DirectorySeparatorChar + "SavedArenas" + Path.DirectorySeparatorChar + input.text + ".json";
         try{
-            Directory.CreateDirectory("./SavedArenas/");
+            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "SavedArenas" + Path.DirectorySeparatorChar);
         } catch(SystemException){
             // it's alright, then the directory already exists
         }
 
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ExportGameObject(modificationsToSave, path);
         
-        path = "./SavedArenas/" + input.text + "_beacons.json";
+        path = "." + Path.DirectorySeparatorChar + "SavedArenas" + Path.DirectorySeparatorChar + input.text + "_beacons.json";
         if (!string.IsNullOrEmpty(input.text)) FileHandler.ExportBeacons(beaconsToSave, path);
     }
 }

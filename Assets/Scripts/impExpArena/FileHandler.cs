@@ -115,7 +115,7 @@ public class FileHandler : MonoBehaviour
         string prefabName = gameObjectData.name.Substring(0, gameObjectData.name.Length - 7); // schneide das "(Clone)" ab
         
         // Objekt wie im JSON spezifiziert erstellen
-        GameObject prefab = Resources.Load<GameObject>("physical_prefabs/" + prefabName); // Lade das Prefab
+        GameObject prefab = Resources.Load<GameObject>("physicalPrefabs" + Path.DirectorySeparatorChar + prefabName); // Lade das Prefab
         if (prefab != null)
         {
             newGameObject = GameObject.Instantiate(prefab, parent.transform); 
@@ -152,7 +152,7 @@ public class FileHandler : MonoBehaviour
         string prefabName = "Beacon";
         
         // Objekt wie im JSON spezifiziert erstellen
-        GameObject prefab = Resources.Load<GameObject>("physical_prefabs/" + prefabName); // Lade das Prefab
+        GameObject prefab = Resources.Load<GameObject>("physicalPrefabs" + Path.DirectorySeparatorChar + prefabName); // Lade das Prefab
         if (prefab != null)
         {
             beaconDataList.ForEach((beaconData) => {

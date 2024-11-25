@@ -33,6 +33,9 @@ public static class GameManagement
     // manage add-box
     public static List<Image> addButtonBackgrounds = new List<Image>();
 
+    /* ------ manage different instances of the game ----------------- */
+    public static string instance = "origin";
+
     /* ------- arena constants --------------------------------------- */
     public const int ARENA_X_MIN = -2;
     public const int ARENA_X_MAX = 2;
@@ -124,7 +127,8 @@ public enum GameState {
     Building,
     Running,
     Evaluation,
-    Paused
+    Paused,
+    Training,
 }
 
 public enum ControlMode {

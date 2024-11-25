@@ -22,7 +22,7 @@ plt.rcParams.update({
 
 # --- read the data ----------------------------------------------------
 
-metric_path = os.path.join(".", "Build", "Metrics")
+metric_path = os.path.join(".", "Build", "Metrics_test_instance")
 
 def read_data_colorVisits():
     with open(os.path.join(metric_path, "colorVisits.csv"), 'r') as file:

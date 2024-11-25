@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Numerics;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SpawnZone : MonoBehaviour
@@ -11,70 +13,80 @@ public class SpawnZone : MonoBehaviour
     private Transform parent;
 
     public int robotsToSpawn = 3;
-    private int currentRobots = 0;
     private bool spawned = false;
     private int retries = 0;
-    private float timeCounter = 0;
+
+    private System.Random random = new System.Random();
 
     void Start(){
         parent = GameObject.Find("Robots").transform;
+        // transform.localScale = new UnityEngine.Vector3(1.5f, transform.localScale.y, 1.5f);
     }
 
 
     void Update()
     {
         // spawn robots when demo is started
-        if(!spawned && GameManagement.gameState == GameState.Paused){
+        if(!spawned && (GameManagement.gameState == GameState.Paused || GameManagement.gameState == GameState.Training)){
 
-            if(currentRobots < robotsToSpawn && retries <= 10*robotsToSpawn)
-            {
-                // spawn robot at 0/0
-                GameObject robot = Instantiate(turtlebot, parent);
-                Vector3 robotPos = robot.transform.position;
-                currentRobots++;
+            PlaceRobots(robotsToSpawn, (transform.position.x, transform.position.z), transform.localScale.x/2);
 
-                // move robot to its spawn zone
-                float noise_x = UnityEngine.Random.Range(-transform.localScale.x/2, transform.localScale.x/2);
-                float noise_z = UnityEngine.Random.Range(-transform.localScale.z/2, transform.localScale.z/2);
-                
-                float newX = Clamp(transform.position.x + noise_x, GameManagement.ARENA_X_MIN, GameManagement.ARENA_X_MAX);
-                float newZ = Clamp(transform.position.z + noise_z, GameManagement.ARENA_Z_MIN, GameManagement.ARENA_Z_MAX);
-
-                robot.transform.SetPositionAndRotation(new Vector3(newX, robotPos.y, newZ), Quaternion.identity);   
-
-                // termination condition
-                retries++;
-                timeCounter = 0;
-            } else {
-                // stand still for three seconds to be sure every robot spawned correctly
-                timeCounter += Time.deltaTime;
-                if(timeCounter >= 3) {
-                    spawned = true;
-                    renderer1.enabled = false;
-                    renderer2.enabled = false;
-                    gameObject.layer = 2;
-                }
-            }
-        } 
-
-        if(GameManagement.gameState == GameState.Running){
-            spawned = true;
             renderer1.enabled = false;
             renderer2.enabled = false;
             gameObject.layer = 2;
         }
     }
 
-    // destroy robots which are not in the spwan zone anymore
-    void OnTriggerExit(Collider collider){
-        if(collider.gameObject.CompareTag("Bot") && !spawned){
-            Destroy(collider.gameObject);
-            currentRobots--;
+    void PlaceRobots(int n, (float x, float y) bigCircleCenter, float bigCircleRadius)
+    {
+        var robots = new List<(float x, float y)>();
+
+        // roboter positionen berechnen
+        while (robots.Count < n && retries < 1000)
+        {
+            // Generiere zufällige Position innerhalb eines größeren Quadrats um den großen Kreis
+            float x = (float)random.NextDouble() * (2 * bigCircleRadius) - bigCircleRadius + bigCircleCenter.x;
+            float y = (float)random.NextDouble() * (2 * bigCircleRadius) - bigCircleRadius + bigCircleCenter.y;
+
+            var newRobot = (x, y);
+
+            if (IsValidPosition(newRobot, robots, bigCircleCenter, bigCircleRadius))
+            {
+                robots.Add(newRobot);
+            }
+            retries += 1;
         }
+
+        // robots tatsächlich spawnen
+        robots.ForEach((position) => {
+            Instantiate(turtlebot, new UnityEngine.Vector3(position.x, turtlebot.transform.position.y, position.y), UnityEngine.Quaternion.identity, parent);
+        });
+
+        spawned = true;
     }
 
-    private float Clamp(float value, float min, float max)
+    bool IsValidPosition((float x, float y) newRobot, List<(float x, float y)> robots, 
+                                (float x, float y) bigCircleCenter, float bigCircleRadius)
     {
-        return Math.Max(min, Math.Min(value, max));
+        float cx = bigCircleCenter.x, cy = bigCircleCenter.y;
+        float nx = newRobot.x, ny = newRobot.y;
+
+        // Prüfen, ob der Roboter innerhalb des großen Kreises ist
+        if (Math.Sqrt((nx - cx) * (nx - cx) + (ny - cy) * (ny - cy)) > bigCircleRadius)
+        {
+            return false;
+        }
+
+        // Prüfen, ob der Roboter mit anderen Robotern kollidiert
+        foreach (var robot in robots)
+        {
+            double rx = robot.x, ry = robot.y;
+            if (Math.Sqrt((nx - rx) * (nx - rx) + (ny - ry) * (ny - ry)) < 0.34) // ein roboter hat 17cm radius
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
 }

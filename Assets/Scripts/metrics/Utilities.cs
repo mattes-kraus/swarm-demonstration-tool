@@ -7,9 +7,9 @@ public static class Utilities{
 
     public static void ExportArrayToCSV(String firstRow, String headers, string filePath)
     {
-        filePath = "." + Path.DirectorySeparatorChar + "Metrics" + Path.DirectorySeparatorChar + filePath;
+        filePath = "." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance + Path.DirectorySeparatorChar + filePath;
         try{
-            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "Metrics");
+            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance);
         } catch (SystemException){
             // it's alright, then the directory already exists
         }
@@ -31,9 +31,9 @@ public static class Utilities{
 
     public static void AppendLineToFile(String filePath, String lineToAppend)
     {
-        filePath = "." + Path.DirectorySeparatorChar + "Metrics" + Path.DirectorySeparatorChar + filePath;
+        filePath = "." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance + Path.DirectorySeparatorChar + filePath;
         try{
-            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "Metrics");
+            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance);
         } catch(SystemException){
             // it's alright, then the directory already exists
         }

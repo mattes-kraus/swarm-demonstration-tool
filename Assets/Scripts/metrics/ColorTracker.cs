@@ -32,15 +32,25 @@ public class ColorTracker : MonoBehaviour
         if(countTime && GameManagement.gameState == GameState.Running){
             currentTime += Time.deltaTime;
         }
+        if(countTime && GameManagement.gameState == GameState.Training){
+            currentTime += 1;
+        }
 
         // measure real speed
-        updateProgress += Time.deltaTime;
-        if(updateProgress >= updateRate){
-            realSpeed = Vector3.Distance(lastPos, transform.position) / updateRate;
-            realSpeed = math.abs(realSpeed);
-
+        if(GameManagement.gameState == GameState.Training){ 
+            // measure speed each frame with 1 deltaTime = 1s
+            realSpeed = Vector3.Distance(lastPos, transform.position);
             lastPos = transform.position;
-            updateProgress = 0;
+        } else {
+            // measure speed each half a second with 1s = 1s
+            updateProgress += Time.deltaTime; 
+            if(updateProgress >= updateRate){
+                realSpeed = Vector3.Distance(lastPos, transform.position) / updateRate;
+                realSpeed = math.abs(realSpeed);
+
+                lastPos = transform.position;
+                updateProgress = 0;
+            }
         }
     }
 

@@ -6,7 +6,7 @@ using UnityEngine;
 
 public class Turtlebot : MonoBehaviour
 {
-    public float speed = 0.31f; 
+    public float speed = 0; 
     public BotBehavior botState = BotBehavior.Random;
     public Vector3 targetLoc;
     public int indexInAllBots; // to get position in voronoi diagram
@@ -21,8 +21,13 @@ public class Turtlebot : MonoBehaviour
 
     void Update()
     {
+        // speed up robot so he moves on max speed per frame instead of per second
+        if(GameManagement.gameState == GameState.Training){
+            return;
+        }
+
         // stop moving and updating when game is not running
-        if(GameManagement.gameState != GameState.Running){
+        if(GameManagement.gameState != GameState.Running && GameManagement.gameState != GameState.Training){
             return;
         }
 

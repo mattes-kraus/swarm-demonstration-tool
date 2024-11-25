@@ -34,10 +34,10 @@ public class MetricManagement: MonoBehaviour
 
     void Update(){
         // only measure metrics when game is running
-        if(GameManagement.gameState != GameState.Running) return;
+        if(GameManagement.gameState != GameState.Running && GameManagement.gameState != GameState.Training) return;
 
         // only record metrics every UPDATE_STEP in seconds
-        if(pastTime < UPDATE_STEP){
+        if(pastTime < UPDATE_STEP && GameManagement.gameState != GameState.Training){
             pastTime  += Time.deltaTime;
         } else {
             pastTime = 0;

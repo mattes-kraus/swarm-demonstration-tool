@@ -51,5 +51,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SwarmDemonstration.sln"
+    "dotnet.defaultSolution": "swarm-demonstration-tool.sln"
 }

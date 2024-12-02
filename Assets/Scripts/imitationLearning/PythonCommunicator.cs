@@ -11,6 +11,7 @@ public class PythonCommunicator : MonoBehaviour
 {
     [SerializeField] private TMP_Text debugTextfield; 
     [SerializeField] private Importer importer;
+    private List<Turtlebot> botIterator;
 
     void Awake()
     {
@@ -47,62 +48,56 @@ public class PythonCommunicator : MonoBehaviour
                 }
             } catch(SystemException e){
                 Debug.Log(e);
-            }
-
-            
+            }            
         }
     }
 
     void Update(){
-        if(GameManagement.gameState == GameState.Training){
+        //if(GameManagement.gameState == GameState.Training){
+            // paths
+            string acts_path = $"./Metrics_{GameManagement.instance}/agent_actions.json";
+            string obs_path  = $"./Metrics_{GameManagement.instance}/agent_observations.json";
+            string exec_path = $"./Metrics_{GameManagement.instance}/actions_executed.json";
 
-            string acts_path = "./Metrics_test_instance/agent_actions.json";
-            string obs_path = "./Metrics_test_instance/agent_observations.json";
+            // --------------- check if new actions came in -------------------
+            string rawObservations = File.ReadAllText(exec_path);
+            ExecutedData observations = JsonUtility.FromJson<ExecutedData>(rawObservations);
+            if (observations == null || observations.executed) return;
 
-            // check if new actions came in
-            string rawObservations = File.ReadAllText(obs_path);
-            ObservationData observations = JsonUtility.FromJson<ObservationData>(rawObservations);
-            if (observations == null || observations.read) return;
-
-
-            // read the new actions
-            // string actions = File.ReadAllText("./Build/Metrics_" + GameManagement.instance + "/agent_actions.json");
+            // -------------------- read the new actions ----------------------
             string actions = File.ReadAllText(acts_path);
-            Root actionData = JsonUtility.FromJson<Root>(actions);
+            ActionData actionData = JsonUtility.FromJson<ActionData>(actions);
 
-            // execute the actions
-            debugTextfield.text = actionData.action_data.Count.ToString();
-            for(int i = 0; i < GameManagement.allBots.Count; i++)
-            {
-                // check that there are not more robots than specified actions
-                if(i < actionData.action_data.Count){
-                    ActionData current_actions = actionData.action_data[i];
+            // ------- look which robots turn it is to move -------------------
+            if(botIterator?.Any() != true){
+                botIterator = new List<Turtlebot>(GameManagement.allBots);
+            }
+            Turtlebot curr = botIterator.First();
 
-                    // rotate and move the robots according to the read json file
-                    GameManagement.allBots[i].transform.Rotate(0f, current_actions.orientation, 0f);
-                    GameManagement.allBots[i].transform.Translate(Vector3.forward * current_actions.speed); 
-                    transform.position = new Vector3(Clamp(transform.position.x), transform.position.y, Clamp(transform.position.z));   
-                }
+            // --------------- execute the action for one robot ---------------
+            curr.transform.Rotate(0f, actionData.orientation, 0f);
+            curr.transform.Translate(Vector3.forward * actionData.speed); 
+            curr.transform.position = new Vector3(
+                Clamp(curr.transform.position.x), 
+                curr.transform.position.y, 
+                Clamp(curr.transform.position.z));   
+            botIterator.Remove(curr);
+
+            // ------- get the observations of the robot and send 'em ---------
+            List<int> obs = new();
+            try{
+                obs = curr.gameObject.GetComponent<LocalMetricTracker>().GetLocalObservations();
+                ObservationData obs_data = new() { observations = obs };
+                File.WriteAllText(obs_path, JsonUtility.ToJson(obs_data, false));
+            }
+            catch (System.Exception e){
+                Debug.Log(e.Message);
             }
 
-            // if(GameManagement.gameState == GameState.Training)
-            //     GameManagement.allBots.ForEach((robot) => {
-            //         robot.botState = BotBehavior.Random;
-            // });
-            
-            Debug.Log("Iteration: " + actionData.iteration);
-            foreach (var agent in actionData.action_data){
-                Debug.Log(agent.orientation + ", " + agent.speed);
-            }
-            Debug.Log(GameManagement.allBots.Count);
-            foreach (var robot in GameManagement.allBots){
-                Debug.Log(robot);
-            }
-
-            // commmunicate with python that we read the new actions
-            ObservationData newData = new() { read = true};
-            File.WriteAllText(obs_path, JsonUtility.ToJson(newData));
-        }
+            // -- commmunicate with python that we executed the new actions ---
+            ExecutedData exec_data = new() { executed = true};
+            File.WriteAllText(exec_path, JsonUtility.ToJson(exec_data, false));
+        //}
     }
 
     float Clamp(float x){

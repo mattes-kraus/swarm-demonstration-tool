@@ -9,14 +9,13 @@ public class ActionData
 }
 
 [Serializable]
-public class Root
+public class ObservationData
 {
-    public int iteration;
-    public List<ActionData> action_data;
+    public List<int> observations;
 }
 
 [Serializable]
-public class ObservationData
+public class ExecutedData
 {
-    public bool read;
+    public bool executed;
 }

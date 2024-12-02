@@ -3,7 +3,18 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 
-public static class Utilities{
+public static class Utilities
+{
+    public static void InitLocalMetrics(){
+        string filePath = "." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance + Path.DirectorySeparatorChar + "actions_executed.json";
+        try{
+            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance);
+        } catch (SystemException){
+            // it's alright, then the directory already exists
+        }
+        ExecutedData initData = new ExecutedData(){executed = true};
+        File.WriteAllText(filePath, JsonUtility.ToJson(initData, false));
+    }
 
     public static void ExportArrayToCSV(String firstRow, String headers, string filePath)
     {

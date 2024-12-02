@@ -21,7 +21,7 @@ public class ColorTracker : MonoBehaviour
     private List<float> colorSwitchTimes = new(0);
 
     //--- what colors visited metric ------------------------------------------
-    private ColorWithThreshhold lastColor = ColorWithThreshhold.Nothing;
+    public ColorWithThreshhold lastColor = ColorWithThreshhold.Nothing;
 
     void Start(){
         metricManager = GameObject.Find("MetricManager").GetComponent<MetricManagement>();

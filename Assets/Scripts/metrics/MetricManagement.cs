@@ -58,6 +58,7 @@ public class MetricManagement: MonoBehaviour
         Utilities.ExportArrayToCSV("0", "average no color time", "avgNoColorTime.csv");
         Utilities.ExportArrayToCSV("0", "average distance to swarm centre", "avgDistToCentre.csv");
         Utilities.ExportArrayToCSV("0", "average speed", "avgSpeed.csv");
+        //Utilities.InitLocalMetrics();
         
         // generate header line for coverage metric
         String header = "";

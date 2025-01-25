@@ -15,28 +15,60 @@ public class LocalMetricTracker : MonoBehaviour
     // helper variables
     private float[] lidar = new float[DIRECTIONS_TO_OBSERVE];
     private Vector3[] closestBots = new Vector3[DIRECTIONS_TO_OBSERVE];
-    private bool colliding = false;
+    private bool collided = false;
 
     // LIDAR visu
     [SerializeField] LineRenderer lineRenderer;
+    public bool visuOn = true;
+
+
+
+    void Update(){
+        // Visu for robot 1
+        if(gameObject.GetComponent<Turtlebot>().indexInAllBots == 1 && visuOn){
+            GetCurrentLidarObservations();
+
+            // Berechne die neue Länge des Arrays
+            int newSize = closestBots.Length*2 + 1;
+            Vector3[] newArray = new Vector3[newSize]; // Neues Array mit mehr Platz
+
+            int arrayIndex = 0;
+            for (int i = 0; i < newArray.Length; i++)
+            {
+                // An geraden Indizes das neue Element einfügen
+                if (i % 2 == 0)
+                {
+                    newArray[i] = transform.position;
+                }
+                else if (arrayIndex < closestBots.Length)
+                {
+                    // Restliche Elemente aus dem alten Array kopieren
+                    newArray[i] = closestBots[arrayIndex];
+                    arrayIndex++;
+                }
+            }
+            lineRenderer.positionCount = DIRECTIONS_TO_OBSERVE*2+1;
+            lineRenderer.SetPositions(newArray);
+        }
+    }
 
     // ---- All local metrics in one flat numerical vector --------------------
-    public List<int> GetLocalObservations(){
-        List<int> result = new();
+    public List<float> GetLocalObservations(){
+        List<float> result = new();
 
         // speed 
-        result.Add((int)(GetCurrentSpeed()*100));
+        result.Add(GetCurrentSpeed());
 
         // color
-        result.Add((int)GetCurrentColor());
+        result.AddRange(GetCurrentColor());
 
         // bumper observations
-        if(GetCurrentlyBumping()) {result.Add(1);} else {result.Add(0);};
+        if(GetCurrentlyBumping()) {result.Add(1f);} else {result.Add(0f);};
 
         // lidar observations
         foreach (var distance in GetCurrentLidarObservations())
         {
-            result.Add((int)(distance*100));
+            result.Add(distance*100);
         }
 
         return result;
@@ -50,8 +82,21 @@ public class LocalMetricTracker : MonoBehaviour
 
 
     // ---------------- optical floor tracking sensor -------------------------
-    private ColorWithThreshhold GetCurrentColor(){
-        return gameObject.GetComponent<ColorTracker>().lastColor;
+    private List<float> GetCurrentColor(){
+        ColorWithThreshhold color = gameObject.GetComponent<ColorTracker>().currentColor;
+
+        switch(color)
+        {
+            case ColorWithThreshhold.Nothing:
+                return new List<float> { 1, 0, 0 };
+            case ColorWithThreshhold.White:
+                return new List<float> { 0, 1, 0 };
+            case ColorWithThreshhold.Black:
+                return new List<float> { 0, 0, 1 };
+            default:
+                return new List<float> { 0, 0, 0};
+        }
+
     }
 
 
@@ -69,7 +114,11 @@ public class LocalMetricTracker : MonoBehaviour
         // reset distances
         for(int i = 0; i < DIRECTIONS_TO_OBSERVE; i++){
             lidar[i] = LIDAR_RADIUS;
-            closestBots[i] = transform.position;
+
+            float angleInRadians = (Mathf.Deg2Rad * (i * 360/DIRECTIONS_TO_OBSERVE) + 180)% 360; // Grad in Bogenmaß
+            float x = transform.position.x + LIDAR_RADIUS * Mathf.Cos(angleInRadians);
+            float z = transform.position.z + LIDAR_RADIUS * Mathf.Sin(angleInRadians);
+            closestBots[i] = new Vector3(x, transform.position.y, z);
         }
 
         // do the LIDAR abstraction
@@ -96,30 +145,24 @@ public class LocalMetricTracker : MonoBehaviour
             }
         }
 
-        // Visu
-        lineRenderer.positionCount = DIRECTIONS_TO_OBSERVE;
-        lineRenderer.SetPositions(closestBots);
-
         return lidar;
     }
 
 
     // ---------------- bumper sensoric ---------------------------------------
     private bool GetCurrentlyBumping(){
-        return colliding;
+        if(collided){
+            collided = false;
+            return true;
+        } else{ 
+            return false;
+        }
     }
-    void OnCollisionStay(Collision collisionInfo){
+    void OnCollisionEnter(Collision collisionInfo){
         if (collisionInfo.gameObject.CompareTag("Flat")){
             return;
         }
 
-        colliding = true;
-    }
-    void OnCollisionExit(Collision collisionInfo){
-        if (collisionInfo.gameObject.CompareTag("Flat")){
-            return;
-        }
-
-        colliding = false;
+        collided = true;
     }
 }

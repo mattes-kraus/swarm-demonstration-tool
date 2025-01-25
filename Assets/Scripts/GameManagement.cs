@@ -35,6 +35,8 @@ public static class GameManagement
 
     /* ------ manage different instances of the game ----------------- */
     public static string instance = "origin";
+    public const int actionsPerSecond = 25; 
+
 
     /* ------- arena constants --------------------------------------- */
     public const int ARENA_X_MIN = -2;
@@ -129,6 +131,7 @@ public enum GameState {
     Evaluation,
     Paused,
     Training,
+    VisualizePolicy
 }
 
 public enum ControlMode {

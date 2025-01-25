@@ -13,6 +13,8 @@ public class Turtlebot : MonoBehaviour
     [SerializeField] private GameObject selectedMarker;
     [SerializeField] private GameObject stateIndicator;
     private const float MAX_SPEED = 0.31f; 
+    private const float borderPuffer = 0.2f; 
+
 
     void Start(){
         indexInAllBots = GameManagement.AddBotToGlobalList(this);
@@ -23,11 +25,26 @@ public class Turtlebot : MonoBehaviour
     {
         // speed up robot so he moves on max speed per frame instead of per second
         if(GameManagement.gameState == GameState.Training){
+            transform.Translate(Vector3.forward * speed * Time.deltaTime * GameManagement.actionsPerSecond);
+            transform.position = new Vector3(
+                Clamp(transform.position.x),
+                transform.position.y, 
+                Clamp(transform.position.z)); 
+            return;
+        }
+
+        // move robots in realtime so user can see what policy is doing 
+        if(GameManagement.gameState == GameState.VisualizePolicy){
+            transform.Translate(Vector3.forward * speed * Time.deltaTime);
+            transform.position = new Vector3(
+                Clamp(transform.position.x),
+                transform.position.y, 
+                Clamp(transform.position.z));
             return;
         }
 
         // stop moving and updating when game is not running
-        if(GameManagement.gameState != GameState.Running && GameManagement.gameState != GameState.Training){
+        if(GameManagement.gameState != GameState.Running){
             return;
         }
 
@@ -197,6 +214,16 @@ public class Turtlebot : MonoBehaviour
     void OnDestroy(){
         GameManagement.allBots.Remove(this);
     }
+
+    float Clamp(float x){
+        if(x >= GameManagement.ARENA_X_MAX - borderPuffer){
+            return GameManagement.ARENA_X_MAX - borderPuffer;
+        } else if(x < GameManagement.ARENA_X_MIN + borderPuffer){
+            return GameManagement.ARENA_X_MIN + borderPuffer;
+        } else {
+            return x;
+        }
+    }
 }
 
 public enum BotBehavior {
@@ -206,3 +233,4 @@ public enum BotBehavior {
     Leave,
     Deploy
 }
+

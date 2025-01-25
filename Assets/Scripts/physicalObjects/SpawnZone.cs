@@ -27,7 +27,10 @@ public class SpawnZone : MonoBehaviour
     void Update()
     {
         // spawn robots when demo is started
-        if(!spawned && (GameManagement.gameState == GameState.Paused || GameManagement.gameState == GameState.Training)){
+        if(!spawned 
+        && (GameManagement.gameState == GameState.Paused 
+        || GameManagement.gameState == GameState.Training
+        || GameManagement.gameState == GameState.VisualizePolicy)){
 
             PlaceRobots(robotsToSpawn, (transform.position.x, transform.position.z), transform.localScale.x/2);
 

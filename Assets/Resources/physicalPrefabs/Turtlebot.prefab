@@ -14,8 +14,8 @@ GameObject:
   - component: {fileID: 4234649144972125750}
   - component: {fileID: 2697871026348034792}
   - component: {fileID: 3099592826750992378}
-  - component: {fileID: 740841749009149837}
   - component: {fileID: 6249064733073437016}
+  - component: {fileID: -269638012877664017}
   m_Layer: 0
   m_Name: Turtlebot
   m_TagString: Bot
@@ -118,7 +118,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   realSpeed: 0
   lastColor: 2
---- !u!120 &740841749009149837
+  currentColor: 2
+--- !u!114 &6249064733073437016
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 379175321310115693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 510cb2b5cab197a469a8d3fd0f84f3b2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineRenderer: {fileID: -269638012877664017}
+  visuOn: 0
+--- !u!120 &-269638012877664017
 LineRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -164,7 +179,7 @@ LineRenderer:
   - {x: 0, y: 0, z: 1}
   m_Parameters:
     serializedVersion: 3
-    widthMultiplier: 0.1
+    widthMultiplier: 1
     widthCurve:
       serializedVersion: 2
       m_Curve:
@@ -216,20 +231,7 @@ LineRenderer:
     shadowBias: 0.5
     generateLightingData: 0
   m_UseWorldSpace: 1
-  m_Loop: 1
---- !u!114 &6249064733073437016
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 379175321310115693}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 510cb2b5cab197a469a8d3fd0f84f3b2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 740841749009149837}
+  m_Loop: 0
 --- !u!1 &1462278310024322907
 GameObject:
   m_ObjectHideFlags: 0
@@ -633,6 +635,7 @@ GameObject:
   - component: {fileID: 3600964812647892732}
   - component: {fileID: 3783960194465190698}
   - component: {fileID: 6576037491014926899}
+  - component: {fileID: 7568579317722422184}
   m_Layer: 0
   m_Name: bottom1
   m_TagString: Untagged
@@ -719,6 +722,20 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &7568579317722422184
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5354624567474603863}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d26a9d374a324ec48b0d4e23bd5caae0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  lineRendererPrefab: {fileID: 4838613653735513110, guid: bc63542a224c31949bf602b61f63fee8, type: 3}
+  currentColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &6396718207264250427
 GameObject:
   m_ObjectHideFlags: 0

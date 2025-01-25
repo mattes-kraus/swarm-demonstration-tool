@@ -22,6 +22,7 @@ public class ColorTracker : MonoBehaviour
 
     //--- what colors visited metric ------------------------------------------
     public ColorWithThreshhold lastColor = ColorWithThreshhold.Nothing;
+    public ColorWithThreshhold currentColor = ColorWithThreshhold.Nothing;
 
     void Start(){
         metricManager = GameObject.Find("MetricManager").GetComponent<MetricManagement>();
@@ -29,17 +30,17 @@ public class ColorTracker : MonoBehaviour
 
     void Update(){
         // count travel time
-        if(countTime && GameManagement.gameState == GameState.Running){
+        if(countTime && (GameManagement.gameState == GameState.Running || GameManagement.gameState == GameState.VisualizePolicy)){
             currentTime += Time.deltaTime;
         }
         if(countTime && GameManagement.gameState == GameState.Training){
-            currentTime += 1;
+            currentTime += Time.deltaTime * GameManagement.actionsPerSecond;
         }
 
         // measure real speed
         if(GameManagement.gameState == GameState.Training){ 
-            // measure speed each frame with 1 deltaTime = 1s
-            realSpeed = Vector3.Distance(lastPos, transform.position);
+            // measure speed each frame with 1s=10s
+            realSpeed = math.abs(Vector3.Distance(lastPos, transform.position)/(Time.deltaTime * GameManagement.actionsPerSecond));
             lastPos = transform.position;
         } else {
             // measure speed each half a second with 1s = 1s
@@ -58,6 +59,8 @@ public class ColorTracker : MonoBehaviour
         try{
             // if we hit a groundsticker we need to update our color metrics
             if(collider.gameObject.GetComponent<PhysicalObject>().type == ObjectType.Groundsticker){
+                // update color it is standing on
+                currentColor = ApplyThreshhold(collider.gameObject.GetComponent<Renderer>().material.color);
 
                 // update last color metric but only if we haven't been already on that sticker
                 if(lastColor == ColorWithThreshhold.Nothing || !countTime) return;
@@ -89,6 +92,9 @@ public class ColorTracker : MonoBehaviour
                 
                 // update last color metric
                 lastColor = ApplyThreshhold(collider.gameObject.GetComponent<Renderer>().material.color);
+
+                // update current color metric
+                currentColor = ColorWithThreshhold.Nothing;
             }
         } catch (SystemException){
             // not too bad, then collision is just not with groundsticker

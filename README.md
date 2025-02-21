@@ -20,6 +20,7 @@ To run the tool, open your explorer and navigate to swarm-demonstration-tool/Bui
 SwarmDemonstration.exe
 
 To see the metrics, navigate to the root directory and run ```python3 ./PythonScripts/all_metrics_live.py```.
+Keep in mind, that the metrics graphs have no history.
 
 Attention: the tool was developed on Windows. Therefore, I couldn't test the tool on Linux or macOS. 
 

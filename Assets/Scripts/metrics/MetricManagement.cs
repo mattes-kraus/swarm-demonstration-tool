@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using TMPro;
 using UnityEditor;
 using UnityEngine;
+
 
 public class MetricManagement: MonoBehaviour
 {
@@ -47,25 +49,40 @@ public class MetricManagement: MonoBehaviour
             UpdateCoverageMetric(false, Time.deltaTime*GameManagement.actionsPerSecond);
         }
         if(GameManagement.gameState == GameState.Running || GameManagement.gameState == GameState.VisualizePolicy){
+            // update metric
             UpdateCoverageMetric(false, Time.deltaTime);
+
+            // write swarm metrics to json so python can evaluate them
+            string path = $"./Metrics_{GameManagement.instance}/swarm_metrics.json";
+            List<float> obs = new(UpdateColorVisits(false));
+            
+            SwarmMetrics metrics = new SwarmMetrics
+            {
+                avgSpeed = UpdateSpeed(false),
+                avgDistToCenter = UpdateAvgDistToCentre(false),
+                avgColorSwitchTime = UpdateAverageNoColorTime(false),
+                colorVisits = obs
+            };
+            
+            File.WriteAllText(path, JsonUtility.ToJson(metrics, false));
         }
     }
 
     void Start(){
         // init csvs to write in
-        Utilities.ExportArrayToCSV("0", "average no color time", "avgNoColorTime.csv");
-        Utilities.ExportArrayToCSV("0", "average distance to swarm centre", "avgDistToCentre.csv");
-        Utilities.ExportArrayToCSV("0", "average speed", "avgSpeed.csv");
+        // Utilities.ExportArrayToCSV("0", "average no color time", "avgNoColorTime.csv");
+        // Utilities.ExportArrayToCSV("0", "average distance to swarm centre", "avgDistToCentre.csv");
+        // Utilities.ExportArrayToCSV("0", "average speed", "avgSpeed.csv");
         
         // generate header line for coverage metric
-        String header = "";
-        String initRow = "";
-        for(int i = 0; i < N_GRIDS_X; i++){
-            for(int j = 0; j < N_GRIDS_Z; j++){
-                header += "gridpos" + i + ":" + j + ",";
-                initRow += "0,";
-        }}
-        Utilities.ExportArrayToCSV(initRow, header, "coverage.csv");
+        // String header = "";
+        // String initRow = "";
+        // for(int i = 0; i < N_GRIDS_X; i++){
+        //     for(int j = 0; j < N_GRIDS_Z; j++){
+        //         header += "gridpos" + i + ":" + j + ",";
+        //         initRow += "0,";
+        // }}
+        // Utilities.ExportArrayToCSV(initRow, header, "coverage.csv");
 
         // init color visits
         for(int i = 0; i<4; i++){

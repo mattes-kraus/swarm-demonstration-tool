@@ -4,6 +4,7 @@ using Unity.Burst.CompilerServices;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
 public class Turtlebot : MonoBehaviour
 {
     public float speed = 0; 
@@ -14,7 +15,6 @@ public class Turtlebot : MonoBehaviour
     [SerializeField] private GameObject stateIndicator;
     private const float MAX_SPEED = 0.31f; 
     private const float borderPuffer = 0.2f; 
-
 
     void Start(){
         indexInAllBots = GameManagement.AddBotToGlobalList(this);

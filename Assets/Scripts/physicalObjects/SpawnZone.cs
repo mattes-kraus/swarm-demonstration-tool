@@ -5,6 +5,7 @@ using System.Numerics;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
 public class SpawnZone : MonoBehaviour
 {
     [SerializeField] private GameObject turtlebot;
@@ -20,7 +21,6 @@ public class SpawnZone : MonoBehaviour
 
     void Start(){
         parent = GameObject.Find("Robots").transform;
-        // transform.localScale = new UnityEngine.Vector3(1.5f, transform.localScale.y, 1.5f);
     }
 
 

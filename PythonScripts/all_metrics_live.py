@@ -1,9 +1,11 @@
+import json
 import os
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib import style
 import numpy as np
 
+# --- Setup the plot style ---------------------------------------------
 style.use('fivethirtyeight')
 
 # --- Setup the figure and subplots ------------------------------------
@@ -20,37 +22,54 @@ plt.rcParams.update({
     'axes.titleweight': 'bold',         # Achsentitel fett
 })
 
+last_color_visits = []
+no_color_time = []
+avg_dist_to_centre = []
+avg_speed = []
+
+
 # --- read the data ----------------------------------------------------
 
-metric_path = os.path.join(".", "Build", "Metrics_test_instance")
+metric_path = os.path.join(".", "Build", "Metrics_origin")
 
 def read_data_colorVisits():
-    with open(os.path.join(metric_path, "colorVisits.csv"), 'r') as file:
-        graph_data = file.readlines()
-    graph_data = graph_data[1:]
-    heights = [int(line.strip()) for line in graph_data if line.strip()]
-    return heights
+    with open(os.path.join(metric_path, "swarm_metrics.json"), 'r') as file:
+        data = json.load(file)
+    
+    try:
+        color_visits = data.get("colorVisits", []) 
+        last_color_visits = color_visits
+        return [int(cv) for cv in color_visits]
+    except:
+        return [int(cv) for cv in last_color_visits]
 
 def read_data_noColorTime():
-    with open(os.path.join(metric_path, "avgNoColorTime.csv"), 'r') as file:
-        graph_data = file.readlines()
-    graph_data = graph_data[1:]
-    time_series = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
-    return time_series
+    with open(os.path.join(metric_path, "swarm_metrics.json"), 'r') as file:
+        data = json.load(file) 
+    
+    try:
+        return data.get("avgColorSwitchTime", [])
+    except:
+        return no_color_time[len(no_color_time)-1]
 
 def read_data_avgDistToCentre():
-    with open(os.path.join(metric_path, "avgDistToCentre.csv"), 'r') as file:
-        graph_data = file.readlines()
-    graph_data = graph_data[1:]
-    heights = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
-    return heights
+    with open(os.path.join(metric_path, "swarm_metrics.json"), 'r') as file:
+        data = json.load(file)
+    
+    try:
+        return data.get("avgDistToCenter", [])
+    except:
+        return avg_dist_to_centre[len(avg_dist_to_centre)-1]
 
 def read_data_avgSpeed():
-    with open(os.path.join(metric_path, "avgSpeed.csv"), 'r') as file:
-        graph_data = file.readlines()
-    graph_data = graph_data[1:]
-    heights = [float(line.strip().replace(",",".")) for line in graph_data if line.strip()]
-    return heights
+    with open(os.path.join(metric_path, "swarm_metrics.json"), 'r') as file:
+        data = json.load(file)
+    
+    try:
+        return data.get("avgSpeed", [])
+    except:
+        return avg_speed[len(avg_speed)-1]
+
 
 # --- Define the plots ------------------------------------------------------
 def animate_colorVisits(i):
@@ -69,18 +88,18 @@ def animate_colorVisits(i):
     ax1.set_xlabel('Color trajectory with w-white, b-black')
 
 def animate_noColorTime(i):
-    heights = read_data_noColorTime()
+    no_color_time.append(read_data_noColorTime())
     ax2.clear()
-    ax2.plot(range(len(heights)), heights)
+    ax2.plot(range(len(no_color_time)), no_color_time)
     ax2.set_title('Average time between color changes')
     ax2.set_xlabel('Time in s')
     ax2.set_ylabel('Average travel time in s')
 
 def animate_avgDistToCentre(i):
-    distances = read_data_avgDistToCentre()
+    avg_dist_to_centre.append(read_data_avgDistToCentre())
     ax3.clear()
-    x = range(len(distances))
-    y = np.array(distances)
+    x = range(len(avg_dist_to_centre))
+    y = np.array(avg_dist_to_centre)
 
     ax3.plot(x, y, 'k-', label='Avg dist to swarm centre')
     ax3.fill_between(x, y, where=(y < 1), color='green', alpha=0.5, interpolate=True, label="Dense") # color background
@@ -95,10 +114,10 @@ def animate_avgDistToCentre(i):
     ax3.legend()
 
 def animate_avgSpeed(i):
-    distances = read_data_avgSpeed()
+    avg_speed.append(read_data_avgSpeed())
     ax4.clear()
-    x = range(len(distances))
-    y = np.array(distances)
+    x = range(len(avg_speed))
+    y = np.array(avg_speed)
 
     ax4.plot(x, y, 'k-', label='Avg robot speed')
     ax4.fill_between(x, y, where=(y < 0.20), color='blue', alpha=0.5, interpolate=True, label="Static") # color background

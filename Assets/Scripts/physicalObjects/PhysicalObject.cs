@@ -1,5 +1,8 @@
 using UnityEngine;
 
+
+// Class for each object which can be added to the scene in the 
+// arena configuration
 public class PhysicalObject : MonoBehaviour
 {
     [SerializeField] public ObjectType type;

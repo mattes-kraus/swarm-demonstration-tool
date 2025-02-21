@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
 public class IndicateSelectedPos : MonoBehaviour
 {
     // behaviour for the pin which shows the current selected position 

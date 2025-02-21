@@ -30,3 +30,12 @@ public class Trajectory
     public List<List<float>> obs;
     public List<List<float>> acts;
 }
+
+[Serializable]
+public class SwarmMetrics
+{
+    public float avgSpeed;
+    public float avgDistToCenter;
+    public float avgColorSwitchTime;
+    public List<float> colorVisits;
+}

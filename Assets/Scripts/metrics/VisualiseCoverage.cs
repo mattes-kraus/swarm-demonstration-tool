@@ -14,7 +14,7 @@ public class VisualiseCoverage : MonoBehaviour
     
     
     // Visu
-    float timeToVis = 0;
+    int timeToVis = 0;
     [SerializeField] Renderer rend;
     TextMesh t;
     void Start()
@@ -41,7 +41,7 @@ public class VisualiseCoverage : MonoBehaviour
         transform.localScale.Set(xscale, transform.localScale.y, zscale);
 
         // find out what part of the grid we are displaying and the value of it
-        timeToVis = metricManager.lastVisitTime[index_x, index_z];
+        timeToVis = (int) metricManager.lastVisitTime[index_x, index_z];
 
         // become color dependant on time tile was never visited
         t.text = timeToVis.ToString();

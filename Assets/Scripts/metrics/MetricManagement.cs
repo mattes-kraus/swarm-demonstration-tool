@@ -50,6 +50,8 @@ public class MetricManagement: MonoBehaviour
             UpdateCoverageMetric(false, Time.deltaTime);
         }
 
+        debugTextfield.text = Time.deltaTime.ToString();
+
         // only record metrics every UPDATE_STEP in seconds
         // if(pastTime < UPDATE_STEP && GameManagement.gameState != GameState.Training){
         //     pastTime  += Time.deltaTime;

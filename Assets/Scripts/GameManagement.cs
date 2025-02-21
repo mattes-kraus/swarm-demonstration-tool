@@ -35,7 +35,8 @@ public static class GameManagement
 
     /* ------ manage different instances of the game ----------------- */
     public static string instance = "origin";
-    public const int actionsPerSecond = 25; 
+    public const int actionsPerSecond = 10; 
+    public static int trail_visu = 0;
 
 
     /* ------- arena constants --------------------------------------- */

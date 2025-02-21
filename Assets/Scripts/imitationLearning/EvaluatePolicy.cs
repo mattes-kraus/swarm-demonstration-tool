@@ -20,7 +20,20 @@ public class EvaluatePolicy : MonoBehaviour
     void Start()
     {
         // Only visualise trail for one robot
-        active = transform.parent.GetComponent<Turtlebot>().indexInAllBots == 0;
+        switch(GameManagement.trail_visu){
+            case 0:
+                active = false;
+                break;
+            case 1:
+                active = transform.parent.GetComponent<Turtlebot>().indexInAllBots == 0;
+                break;
+            case 2:
+                active = true;
+                break;
+            default:
+                active = false;
+                break;
+        }
 
         if(active){
             // Finde Fixpunkt für die LineRenderer
@@ -29,8 +42,13 @@ public class EvaluatePolicy : MonoBehaviour
             // Finde color tracker für echtes speed
             colorTracker = transform.parent.GetComponent<ColorTracker>();
 
+            // Adjust Color if necessary
+            if(GameManagement.trail_visu == 2){
+                currentColor = GetRobotColor();
+            }
+
             // Erstelle den ersten LineRenderer
-            CreateNewLineRenderer();
+            CreateNewLineRenderer();    
         }
         
     }
@@ -43,13 +61,13 @@ public class EvaluatePolicy : MonoBehaviour
             UpdateLineRenderer();
 
             // Change Color if speed changes
-            if (Mathf.Abs(colorTracker.realSpeed - lastSpeed) > 0.01f)
-            {
+            if(GameManagement.trail_visu == 1 
+            && Mathf.Abs(colorTracker.realSpeed - lastSpeed) > 0.01f){
                 ChangeColor(GetSpeedColor(colorTracker.realSpeed));
                 lastSpeed = colorTracker.realSpeed;
             }
         }
-    }
+    }   
 
     private void CreateNewLineRenderer()
     {
@@ -101,6 +119,28 @@ public class EvaluatePolicy : MonoBehaviour
 
         // Lerp between the colors
         return Color.Lerp(slowColor, fastColor, normalizedSpeed);
+    }
+
+    public Color GetRobotColor()
+    {
+        int index = transform.parent.GetComponent<Turtlebot>().indexInAllBots;
+
+        switch(index){
+            case 0:
+                return new(89 / 255f, 199 / 255f, 235 / 255f);
+            case 1:
+                return new(254 / 255f, 160 / 255f, 144 / 255f);
+            case 2:
+                return new(154 / 255f, 160 / 255f, 167 / 255f);
+            case 3:
+                return new(7 / 255f, 113 / 255f, 135 / 255f);
+            case 4:
+                return new(10 / 255f, 144 / 255f, 134 / 255f);
+            case 5:
+                return new(224 / 255f, 96 / 255f, 126 / 255f);
+            default:
+                return new(89 / 255f, 199 / 255f, 235 / 255f);
+        };
     }
 
     public void ChangeColor(Color newColor)

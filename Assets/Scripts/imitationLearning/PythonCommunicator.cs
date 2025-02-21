@@ -71,6 +71,8 @@ public class PythonCommunicator : MonoBehaviour
                     purpose = GameState.VisualizePolicy;
                 }
 
+                GameManagement.trail_visu = int.Parse(parsedArguments["trail_visu"]);
+
 
             } catch(SystemException e){
                 Debug.Log(e);

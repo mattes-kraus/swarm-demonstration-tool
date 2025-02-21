@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -170,6 +171,7 @@ public class LocalMetricTracker : MonoBehaviour
 
             // see in what orientation the other robot lies
             index = (int)(angle * DIRECTIONS_TO_OBSERVE / 360);
+            index = Math.Clamp(index, 0, DIRECTIONS_TO_OBSERVE-1);
 
             // update shortest distance in that direction
             if(Mathf.Abs((otherBotPos - thisBotPos).magnitude) < lidar[index]){

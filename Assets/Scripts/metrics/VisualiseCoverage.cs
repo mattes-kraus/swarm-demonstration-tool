@@ -4,6 +4,8 @@ using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// Visualise the coverage of the arena
 public class VisualiseCoverage : MonoBehaviour
 
 {

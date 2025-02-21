@@ -6,6 +6,8 @@ using UnityEngine;
 using System.Text.RegularExpressions;
 using System.Linq.Expressions;
 
+
+// changes the target location for new behaviors
 public class TargetLocation : MonoBehaviour
 {
     [SerializeField] private TMP_InputField input;

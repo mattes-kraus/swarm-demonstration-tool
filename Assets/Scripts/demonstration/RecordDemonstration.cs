@@ -9,6 +9,8 @@ using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
+// records metrics during demonstrations of the user and exports them
+// to a json file
 public class RecordDemonstration : MonoBehaviour, IPointerDownHandler
 {
     // constants
@@ -25,17 +27,15 @@ public class RecordDemonstration : MonoBehaviour, IPointerDownHandler
     private List<Trajectory> trajectories = new();
 
     // helper
-    // private List<int> last_obs = new();
     private List<float> last_orientations = new();
 
 
-    // Update is called once per frame
     void Update()
     {
         // check if we are currently recording
         if(!active) return;
 
-        // check if we have recorded enough
+        // check if we have recorded long enough
         if(count_timesteps > FINAL_TIMESTEP){
             StartStopRecording();
             return;
@@ -67,11 +67,16 @@ public class RecordDemonstration : MonoBehaviour, IPointerDownHandler
                 curr_bot.realSpeed,
                 deltaOrientation
             };
-            Debug.Log("delta orientation:" + acts[1]);
 
             List<float> obs = new();
-            // obs.AddRange(robot.GetComponent<LocalMetricTracker>().GetLocalObservations());
+            // when uncommenting following line, demonstrations also record local metrics. 
+            // if doing so, comment line where zeros are added to obs.
+            // obs.AddRange(robot.GetComponent<LocalMetricTracker>().GetLocalObservations()); 
+            
+            // Add local observations
             obs.AddRange(Enumerable.Repeat(0f, N_LOCAL_OBS).ToList());
+
+            // Add global observations
             obs.AddRange(metricManager.GetSwarmMetrics());
 
             // if its first obs, we need to wait one round with saving since we haven't a last_obs

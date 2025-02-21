@@ -5,6 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+// import an arena configuration from a json file
 public class Importer : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private GameObject modParent;

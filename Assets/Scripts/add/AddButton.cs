@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+// When clicked, the user is able to add elements when clicking on the arena
 public class AddButton : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private ObjectType newSpawnType;
@@ -15,7 +16,6 @@ public class AddButton : MonoBehaviour, IPointerDownHandler
         GameManagement.addButtonBackgrounds.Add(background);
     }
 
-    // Update is called once per frame
     public void OnPointerDown(PointerEventData pointerEventData){
         GameManagement.ChangeNewElementType(newSpawnType, background);
     }

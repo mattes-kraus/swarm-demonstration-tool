@@ -6,6 +6,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+// export the arena configuration to a json file
 public class Exporter : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private GameObject modificationsToSave;

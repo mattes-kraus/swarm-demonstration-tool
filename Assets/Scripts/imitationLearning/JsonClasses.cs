@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 
+
+// JSON Structures for the in- and export of metrics and actions
 [Serializable]
 public class ActionData
 {

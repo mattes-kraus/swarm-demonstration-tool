@@ -49,24 +49,6 @@ public class MetricManagement: MonoBehaviour
         if(GameManagement.gameState == GameState.Running || GameManagement.gameState == GameState.VisualizePolicy){
             UpdateCoverageMetric(false, Time.deltaTime);
         }
-
-        debugTextfield.text = Time.deltaTime.ToString();
-
-        // only record metrics every UPDATE_STEP in seconds
-        // if(pastTime < UPDATE_STEP && GameManagement.gameState != GameState.Training){
-        //     pastTime  += Time.deltaTime;
-        // } else {
-        //     pastTime = 0;
-        //     // --- TOTAL DIST TO SWARM CENTRE ---------------------------------
-        //     UpdateAvgDistToCentre();
-        //     // --- COVERAGE METRIC --------------------------------------------
-        //     // UpdateCoverageMetric();
-        //     // --- COLOR METRICS  ---------------------------------------------
-        //     UpdateAverageNoColorTime();
-        //     UpdateColorVisits();
-        //     // --- SPEED METRIC -----------------------------------------------
-        //     UpdateSpeed();
-        // }
     }
 
     void Start(){
@@ -74,7 +56,6 @@ public class MetricManagement: MonoBehaviour
         Utilities.ExportArrayToCSV("0", "average no color time", "avgNoColorTime.csv");
         Utilities.ExportArrayToCSV("0", "average distance to swarm centre", "avgDistToCentre.csv");
         Utilities.ExportArrayToCSV("0", "average speed", "avgSpeed.csv");
-        // Utilities.InitLocalMetrics();
         
         // generate header line for coverage metric
         String header = "";
@@ -116,7 +97,6 @@ public class MetricManagement: MonoBehaviour
         }
 
         // output
-        print(obs);
         return obs;
     }
 
@@ -148,12 +128,14 @@ public class MetricManagement: MonoBehaviour
         Utilities.ExportArrayToCSV(row, "Appearance of color combinations", "colorVisits.csv");
         return colorVisits;
     }
+    
     float UpdateAverageNoColorTime(bool writeCSV = true){
         avgColorSwitchTime = avgColorSwitchTimes.Average();
         if(!writeCSV) return avgColorSwitchTime;
         Utilities.AppendLineToFile("avgNoColorTime.csv", avgColorSwitchTime.ToString());
         return avgColorSwitchTime;
     }
+
     float UpdateSpeed(bool writeCSV = true){
         float totalSpeed = 0;
         int nBots = 0;
@@ -167,6 +149,7 @@ public class MetricManagement: MonoBehaviour
         Utilities.AppendLineToFile("avgSpeed.csv", avgSpeed.ToString());
         return avgSpeed;
     }
+
     float[,] UpdateCoverageMetric(bool writeCSV = true, float deltaTime = 1){
         // update last visit time
         for (int xi = 0; xi < N_GRIDS_X; xi++)
@@ -196,6 +179,7 @@ public class MetricManagement: MonoBehaviour
         Utilities.AppendLineToFile("coverage.csv", row);
         return lastVisitTime;
     }
+
     float UpdateAvgDistToCentre(bool writeCSV = true){
         // calc swarm centre
         float meanX = 0;

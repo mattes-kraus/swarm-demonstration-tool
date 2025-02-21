@@ -1,6 +1,9 @@
 using System;
 using UnityEngine;
 
+
+// Beacon is a game object that can be placed in the arena to change
+// behavior of the turtlebots that collide with it
 public class Beacon : MonoBehaviour
 {
     public BotBehavior behavior = BotBehavior.Random;

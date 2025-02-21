@@ -4,6 +4,8 @@ using System.Linq;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
+// Visualizes the trail of the robot
 public class EvaluatePolicy : MonoBehaviour
 {
     private bool active;
@@ -19,14 +21,17 @@ public class EvaluatePolicy : MonoBehaviour
 
     void Start()
     {
-        // Only visualise trail for one robot
+        // Evaluate arguments the simulation was started with
         switch(GameManagement.trail_visu){
+            // no trail
             case 0:
                 active = false;
                 break;
+            // trail for one robot
             case 1:
                 active = transform.parent.GetComponent<Turtlebot>().indexInAllBots == 0;
                 break;
+            // trail for all robots
             case 2:
                 active = true;
                 break;
@@ -36,18 +41,16 @@ public class EvaluatePolicy : MonoBehaviour
         }
 
         if(active){
-            // Finde Fixpunkt für die LineRenderer
+            // Put LineRenderer in Trail GameObject (position 0,0,0) so 
+            // I can use absolute positions for the trail
             parent = GameObject.Find("Trail").transform;
-
-            // Finde color tracker für echtes speed
             colorTracker = transform.parent.GetComponent<ColorTracker>();
 
-            // Adjust Color if necessary
+            // set color once and create one linerenderer for each robot
             if(GameManagement.trail_visu == 2){
                 currentColor = GetRobotColor();
             }
 
-            // Erstelle den ersten LineRenderer
             CreateNewLineRenderer();    
         }
         
@@ -55,12 +58,13 @@ public class EvaluatePolicy : MonoBehaviour
 
     void Update()
     {
-        // Only visualise trail for one robot
+        // Update trail
         if(active){
             // Update points in line renderer
             UpdateLineRenderer();
 
-            // Change Color if speed changes
+            // If we visualize one robot, the color is dependet from current speed. 
+            // Therefore change Color if speed changes
             if(GameManagement.trail_visu == 1 
             && Mathf.Abs(colorTracker.realSpeed - lastSpeed) > 0.01f){
                 ChangeColor(GetSpeedColor(colorTracker.realSpeed));
@@ -71,7 +75,11 @@ public class EvaluatePolicy : MonoBehaviour
 
     private void CreateNewLineRenderer()
     {
-        GameObject lineObject = Instantiate(lineRendererPrefab, Vector3.zero, Quaternion.identity, parent);
+        GameObject lineObject = Instantiate(
+            lineRendererPrefab, 
+            Vector3.zero, 
+            Quaternion.identity, parent
+        );
         currentLineRenderer = lineObject.GetComponent<LineRenderer>();
         if (currentLineRenderer == null)
         {
@@ -79,12 +87,13 @@ public class EvaluatePolicy : MonoBehaviour
             return;
         }
 
-        // Setze die aktuelle Farbe
+        // Set current color
         currentLineRenderer.startColor = currentColor;
         currentLineRenderer.endColor = currentColor;
         currentLineRenderer.positionCount = 1;
 
-        // verhindere gap zwischen den Farben
+        // If we start the new colored trail with the last position of the old 
+        // trail, we prevent gaps between the trails
         Vector3 firstPoint = Vector3.zero;
         if(positions.Count > 0)
             firstPoint = positions[positions.Count - 1];
@@ -125,6 +134,7 @@ public class EvaluatePolicy : MonoBehaviour
     {
         int index = transform.parent.GetComponent<Turtlebot>().indexInAllBots;
 
+        // university of konstanz colors
         switch(index){
             case 0:
                 return new(89 / 255f, 199 / 255f, 235 / 255f);
@@ -145,10 +155,10 @@ public class EvaluatePolicy : MonoBehaviour
 
     public void ChangeColor(Color newColor)
     {
-        // Setze die neue Farbe
+        // Set new color
         currentColor = newColor;
 
-        // Beende den aktuellen LineRenderer und starte einen neuen
+        // Stop old line renderer and create new one
         CreateNewLineRenderer();
     }
 }

@@ -7,6 +7,7 @@ using TMPro;
 using UnityEngine;
 
 
+// Communicates with python to get actions and send observations
 public class PythonCommunicator : MonoBehaviour
 {   
 
@@ -21,19 +22,21 @@ public class PythonCommunicator : MonoBehaviour
 
     private string arenaName;
 
+
+    // Evaluate the arguments the simulation is started with
     void Awake()
     {
         string[] args = System.Environment.GetCommandLineArgs();
 
-        // Check ob Programm aus Python gestartet wurde
+        // Check if program was started from python
         if (args.Length > 1)
         {
-            /* ------------- Argumente vorbereiten ----------------------------------- */
-            // Regex zum Extrahieren von Variablen und Werten
+            /* ------------- prepare arguments --------------------------------------- */
+            // Regex to extract arguments
             string pattern = @"-(\w+)\s+([^\s]+)";
             var matches = Regex.Matches(args[1], pattern); //args[0] ist Programmname
 
-            // Dictionary zum Speichern der Variablen-Werte-Paare
+            // Dictionary to save argument values according to their name
             Dictionary<string, string> parsedArguments = new Dictionary<string, string>();
 
             foreach (Match match in matches)
@@ -43,27 +46,27 @@ public class PythonCommunicator : MonoBehaviour
                 parsedArguments[variable] = value;
             }
 
-            /* ------------- Argumente auswerten ------------------------------------- */
+            /* ------------- evaluate arguments  ------------------------------------- */
             try{
                 GameManagement.instance = parsedArguments["instanceName"];
                 
                 if (parsedArguments["reason"] == "training") {
-                    // springe direkt zur Demonstration und lese in intervallen aktionen aus
+                    // jump directly to Demonstration und and read actions
                     GameManagement.gameState = GameState.Training;
 
-                    // arena laden, hässlich da Importer auch gleichzeitig import button ist
+                    // load arena
                     arenaName = parsedArguments["arenaName"];
                     importer.LoadArena(arenaName);
 
-                    // save purpose so we can correctly reset later
+                    // save purpose the user provided so we can correctly reset later
                     purpose = GameState.Training;
                 }
 
                 if (parsedArguments["reason"] == "policy_visu") {
-                    // springe direkt zur Demonstration und lese in intervallen aktionen aus
+                    // jump directly to Demonstration und and read actions
                     GameManagement.gameState = GameState.VisualizePolicy;
 
-                    // arena laden, hässlich da Importer auch gleichzeitig import button ist
+                    // load arena
                     arenaName = parsedArguments["arenaName"];
                     importer.LoadArena(arenaName);
                     
@@ -155,8 +158,6 @@ public class PythonCommunicator : MonoBehaviour
             curr.speed = actionData.speed;  
             botIterator.Remove(curr);
 
-            // debug
-            // debugTextfield.text = rotation + " " + (float) rotation + " " + actionData.speed + " " + (float)actionData.speed;
 
             // ------- get the observations of the NEXT robot and send 'em ----
             // next robot and not current since the next action will be based
@@ -171,12 +172,7 @@ public class PythonCommunicator : MonoBehaviour
             obs_data.observations.AddRange(curr.gameObject.GetComponent<LocalMetricTracker>().GetLocalObservations());
             obs_data.observations.AddRange(metricManager.GetSwarmMetrics());
             
-            // check if the demonstration is over
-            // if(GameManagement.gameState == GameState.Training){
-            //     obs_data.terminated = passedTime > (48f/(float)GameManagement.actionsPerSecond);
-            // } else {
-                obs_data.terminated = passedTime > 48;
-            // }
+            obs_data.terminated = passedTime > 48;
 
             // send obs to python
             done = false;

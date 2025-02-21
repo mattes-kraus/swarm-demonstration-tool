@@ -7,6 +7,8 @@ using Unity.VisualScripting.FullSerializer;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 
+
+// implementation of most local metrics, especially LIDAR and bumper
 public class LocalMetricTracker : MonoBehaviour
 {
     // constants
@@ -133,14 +135,6 @@ public class LocalMetricTracker : MonoBehaviour
         // reset distances
         for(int i = 0; i < DIRECTIONS_TO_OBSERVE; i++){
             lidar[i] = LIDAR_RADIUS;
-
-            // Vector3 forward = transform.forward;
-            // float angleToOrigin = Mathf.Atan2(forward.z, forward.x) * Mathf.Rad2Deg;
-            // float angleInRadians = Mathf.Deg2Rad * (i * 360 / DIRECTIONS_TO_OBSERVE) - Mathf.Deg2Rad * angleToOrigin;
-
-            // float x = transform.position.x + LIDAR_RADIUS * Mathf.Cos(angleInRadians);
-            // float z = transform.position.z + LIDAR_RADIUS * Mathf.Sin(angleInRadians);
-            // closestBots[i] = new Vector3(x, transform.position.y, z);
         }
 
         // do the LIDAR abstraction

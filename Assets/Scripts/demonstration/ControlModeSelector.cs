@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// changes the control mode of the robots 
 public class ControlModeSelector : MonoBehaviour
 {
     [SerializeField] private GameObject beacon;

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+// Leave the arena customization and start the actual demonstration
 public class StartDemo : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private GameObject demoUI;

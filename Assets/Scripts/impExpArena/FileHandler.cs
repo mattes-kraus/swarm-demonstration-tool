@@ -27,6 +27,8 @@ public class ExportData
     public List<BeaconData> beacons;
 }
 
+
+// handles the import and export of the arena
 public class FileHandler : MonoBehaviour
 {
     public static void ExportGameObject(GameObject gameObject, string filePath)

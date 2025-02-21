@@ -3,6 +3,8 @@ using System.Collections;
 using UnityEngine;
 using System.IO;
 
+
+// Utilities class for csv management
 public static class Utilities
 {
     public static void InitLocalMetrics(){

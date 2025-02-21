@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+
+// change from 2D to 3D and vice versa
 public class Change2D : MonoBehaviour, IPointerDownHandler
 {
     [SerializeField] private GameObject cam2D;

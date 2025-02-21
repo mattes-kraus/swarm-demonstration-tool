@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
+
+// if you click this button, you can pause the simulation
 public class PauseDemo : MonoBehaviour,IPointerDownHandler
 {
     [SerializeField] private Sprite imageRun;

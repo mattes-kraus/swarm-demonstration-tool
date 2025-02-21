@@ -5,6 +5,8 @@ using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 
+
+// tracks some local metrics of the robots, especially speed and color metrics
 public class ColorTracker : MonoBehaviour
 {
 

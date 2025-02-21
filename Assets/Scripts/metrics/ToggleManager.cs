@@ -4,6 +4,8 @@ using csDelaunay;
 using UnityEngine;
 using UnityEngine.UI;
 
+
+// Manage coverage and voronoi visualization
 public class ToggleManager : MonoBehaviour
 {    
     public void ToggleCoverageMetric(bool show){

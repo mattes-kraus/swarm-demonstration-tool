@@ -69,20 +69,12 @@ public class MetricManagement: MonoBehaviour
     }
 
     void Start(){
-        // init csvs to write in
-        // Utilities.ExportArrayToCSV("0", "average no color time", "avgNoColorTime.csv");
-        // Utilities.ExportArrayToCSV("0", "average distance to swarm centre", "avgDistToCentre.csv");
-        // Utilities.ExportArrayToCSV("0", "average speed", "avgSpeed.csv");
-        
-        // generate header line for coverage metric
-        // String header = "";
-        // String initRow = "";
-        // for(int i = 0; i < N_GRIDS_X; i++){
-        //     for(int j = 0; j < N_GRIDS_Z; j++){
-        //         header += "gridpos" + i + ":" + j + ",";
-        //         initRow += "0,";
-        // }}
-        // Utilities.ExportArrayToCSV(initRow, header, "coverage.csv");
+        // create directory for metrics
+        try{
+            Directory.CreateDirectory("." + Path.DirectorySeparatorChar + "Metrics_" + GameManagement.instance);
+        } catch (SystemException){
+            // it's alright, then the directory already exists
+        }
 
         // init color visits
         for(int i = 0; i<4; i++){

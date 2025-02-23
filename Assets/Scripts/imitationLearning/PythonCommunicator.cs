@@ -51,7 +51,7 @@ public class PythonCommunicator : MonoBehaviour
                 GameManagement.instance = parsedArguments["instanceName"];
                 
                 if (parsedArguments["reason"] == "training") {
-                    // jump directly to Demonstration und and read actions
+                    // jump directly to Demonstration and read actions
                     GameManagement.gameState = GameState.Training;
 
                     // load arena
@@ -63,7 +63,7 @@ public class PythonCommunicator : MonoBehaviour
                 }
 
                 if (parsedArguments["reason"] == "policy_visu") {
-                    // jump directly to Demonstration und and read actions
+                    // jump directly to Demonstration and read actions
                     GameManagement.gameState = GameState.VisualizePolicy;
 
                     // load arena

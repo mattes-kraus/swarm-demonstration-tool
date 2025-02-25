@@ -12,6 +12,9 @@ public class PythonCommunicator : MonoBehaviour
 {   
 
     [SerializeField] private TMP_Text debugTextfield; 
+    [SerializeField] private GameObject unnecessaryUI; 
+    [SerializeField] private GameObject policyVisuUI; 
+    [SerializeField] private GameObject trainingVisuUI; 
     [SerializeField] private Importer importer;
     [SerializeField] private MetricManagement metricManager;
     [SerializeField] private StartDemo demoStartHandler;
@@ -58,6 +61,10 @@ public class PythonCommunicator : MonoBehaviour
                     arenaName = parsedArguments["arenaName"];
                     importer.LoadArena(arenaName);
 
+                    // deactivate UI
+                    unnecessaryUI.SetActive(false);
+                    trainingVisuUI.SetActive(true);
+
                     // save purpose the user provided so we can correctly reset later
                     purpose = GameState.Training;
                 }
@@ -69,6 +76,11 @@ public class PythonCommunicator : MonoBehaviour
                     // load arena
                     arenaName = parsedArguments["arenaName"];
                     importer.LoadArena(arenaName);
+
+                    // deactivate UI for arena customization and activate policy visu UI
+                    unnecessaryUI.SetActive(false);
+                    policyVisuUI.SetActive(true);
+                    policyVisuUI.transform.GetChild(0).GetChild(0).GetComponent<TMP_Text>().text = "Policy visu in " + arenaName;
                     
                     // save purpose so we can correctly reset later
                     purpose = GameState.VisualizePolicy;

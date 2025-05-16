@@ -34,14 +34,14 @@ public class Turtlebot : MonoBehaviour
         }
 
         // move robots in realtime so user can see what policy is doing 
-        if(GameManagement.gameState == GameState.VisualizePolicy){
+        // if(GameManagement.gameState == GameState.VisualizePolicy){
             transform.Translate(Vector3.forward * speed * Time.deltaTime);
             transform.position = new Vector3(
                 Clamp(transform.position.x),
                 transform.position.y, 
                 Clamp(transform.position.z));
             return;
-        }
+        // }
 
         // stop moving and updating when game is not running
         if(GameManagement.gameState != GameState.Running){

@@ -18,7 +18,7 @@ public class PythonCommunicator : MonoBehaviour
     [SerializeField] private Importer importer;
     [SerializeField] private MetricManagement metricManager;
     [SerializeField] private StartDemo demoStartHandler;
-    private List<Turtlebot> botIterator;
+    
     private float passedTime = 0;   // tracks how long the demo already is
     private float cycleTime = 0;    // tracks how long we waited since the last action
     private GameState purpose;
@@ -96,15 +96,6 @@ public class PythonCommunicator : MonoBehaviour
     }
 
     void Update(){
-        // track time for check if demo is over. PassedTime will be something about 48 seconds
-        if (GameManagement.gameState == GameState.Training){
-            passedTime += Time.deltaTime * GameManagement.actionsPerSecond;
-            cycleTime  += Time.deltaTime * GameManagement.actionsPerSecond;
-        } else {
-            passedTime += Time.deltaTime;
-            cycleTime  += Time.deltaTime;
-        }
-
         // also, we just want python to take actions each second per robot. With speed up,
         // each second divided by actions_per_second. 
         if( 1f / GameManagement.allBots.Count > cycleTime)
@@ -148,58 +139,6 @@ public class PythonCommunicator : MonoBehaviour
                 File.WriteAllText(exec_path, JsonUtility.ToJson(reset_data, false));
                 return;
             }
-
-            // --------------- if no new actions came in return  --------------
-            if (exec_data.executed) return;
-
-            // --------------- else read the new actions ----------------------
-            string actions = File.ReadAllText(acts_path);
-            ActionData actionData = JsonUtility.FromJson<ActionData>(actions);
-            
-            // ------- look which robots turn it is to move -------------------
-            if(botIterator?.Any() != true){
-                botIterator = new List<Turtlebot>(GameManagement.allBots);
-            }
-            Turtlebot curr = botIterator.First();
-            
-            // --------------- execute the action for one robot ---------------
-            // cnn will give rotation [-1,1] where 0 = 0°, -1 = -180 and 1 = 180
-            float rotation = actionData.orientation * 180 ; 
-            curr.transform.Rotate(0f, rotation, 0f);
-
-            curr.speed = actionData.speed;  
-            botIterator.Remove(curr);
-
-
-            // ------- get the observations of the NEXT robot and send 'em ----
-            // next robot and not current since the next action will be based
-            // on the observations we return here 
-            if(botIterator?.Any() != true){
-                botIterator = new List<Turtlebot>(GameManagement.allBots);
-            }
-            curr = botIterator.First();
-
-            // add local and swarm metrics
-            ObservationData obs_data = new() { observations =  new()};
-            obs_data.observations.AddRange(curr.gameObject.GetComponent<LocalMetricTracker>().GetLocalObservations());
-            obs_data.observations.AddRange(metricManager.GetSwarmMetrics());
-            
-            obs_data.terminated = passedTime > 48;
-
-            // send obs to python
-            done = false;
-            while(!done){
-                try{
-                    File.WriteAllText(obs_path, JsonUtility.ToJson(obs_data, false));
-                    done = true;
-                } catch (Exception) {
-                    Debug.Log("wait for obs permission");
-                }
-            }
-
-            // -- commmunicate with python that we executed the new actions ---
-            exec_data = new() { executed = true};
-            File.WriteAllText(exec_path, JsonUtility.ToJson(exec_data, false));
         }
     }
 }

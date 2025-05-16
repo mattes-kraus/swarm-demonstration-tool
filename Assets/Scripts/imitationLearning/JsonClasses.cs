@@ -8,6 +8,12 @@ public class ActionData
 {
     public float orientation;
     public float speed;
+
+    public ActionData(float speed, float orientation)
+    {
+        this.speed = speed;
+        this.orientation = orientation;
+    }
 }
 
 [Serializable]

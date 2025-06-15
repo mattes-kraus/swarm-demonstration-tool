@@ -4,7 +4,7 @@ A Unity project for a tool, where you can control a swarm of robots and record c
 Read my report for more information.
 
 <p align="center">
-  <img src="Videos/arena_design.gif" width="300" />
+  <img src="Videos/arena_design.gif"/>
 </p>
 
 ## Setup

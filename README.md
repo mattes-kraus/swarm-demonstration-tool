@@ -3,6 +3,10 @@
 A Unity project for a tool, where you can control a swarm of robots and record certain metrics.
 Read my report for more information.
 
+<p align="center">
+  <img src="Videos/arena_design.gif" width="300" />
+</p>
+
 ## Setup
 
 - clone the repository (```git clone git@github.com:StudentWorkCPS/swarm-demonstration-tool.git```)

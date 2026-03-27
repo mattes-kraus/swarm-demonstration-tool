@@ -1,7 +1,7 @@
 # A Tool for Demonstration and Visualisation of Robot Swarms
 
 A Unity project for a tool, where you can control a swarm of robots and record certain metrics.
-Read my report for more information.
+Read [my paper from ICRA 2026](https://arxiv.org/abs/2603.02783) for more information.
 
 <table>
   <tr>

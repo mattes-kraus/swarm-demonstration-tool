@@ -3,9 +3,21 @@
 A Unity project for a tool, where you can control a swarm of robots and record certain metrics.
 Read my report for more information.
 
-<p align="center">
-  <img src="Videos/arena_design.gif"/>
-</p>
+<table>
+  <tr>
+    <td align="center">
+      <img src="Videos/arena_design.gif" width="400" alt="Arena Design Animation" />
+    </td>
+    <td align="center">
+      <img src="https://github.com/user-attachments/assets/df54785f-6fa7-4740-8baf-daca82ce67da" width="400" alt="Swarm Lab" />
+    </td>
+  </tr>
+  <tr>
+    <td align="center"><em>The process of building an arena where the robots can be moved in.</em></td>
+    <td align="center"><em>The arena is finished, the robots spawned and can now be controlled.</em></td>
+  </tr>
+</table>
+
 
 ## Setup
 
